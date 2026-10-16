@@ -57,7 +57,6 @@ export default function AdminLoginPage() {
   return (
     <section className="section-panel" style={{ maxWidth: '440px', margin: '60px auto', padding: '0 12px' }}>
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <p className="section-label">Admin Portal</p>
         <h2 style={{ fontSize: '28px' }}>Portfolio CMS</h2>
         <p style={{ color: 'var(--muted)', fontSize: '13px' }}>
           Sign in to manage blogs, projects, links, and portfolio data.

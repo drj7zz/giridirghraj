@@ -10,7 +10,7 @@ export const socialLinks = [
 export const facts = [
   ['Location', ['Parsa, Madhesh', 'Nepal']],
   ['Education', ['Bachelor of Information', 'Technology (BIT)']],
-  ['Discipline', ['Frontend Architecture', '& Engineering']],
+  ['Discipline', ['Software Development', '& Engineering']],
   ['Approach', ['Methodical, reliable', '& performance-driven']]
 ];
 
@@ -22,7 +22,7 @@ export const heroSignals = [
 
 export const skills = [
   ['Code2', 'Modern JavaScript & TypeScript', 'Engineering interactive, type-safe, and maintainable architectures with strong browser fundamentals.', 'CORE'],
-  ['Layout', 'Frontend Architecture & CSS', 'Crafting responsive design systems, semantic markup, fluid layouts, and polished user interactions.', 'BUILD'],
+  ['Layout', 'Software Architecture & Interfaces', 'Building clear, responsive interfaces and maintainable software with accessible interaction patterns.', 'BUILD'],
   ['GitBranch', 'Open Source & Version Control', 'Driving reproducible builds, automated CI/CD workflows, collaborative pull requests, and peer reviews.', 'SCALE']
 ];
 
@@ -78,7 +78,7 @@ export const blogPosts = [
     date: '2026-07-28',
     readTime: '4 min read',
     tags: ['Accessibility', 'HTML', 'UX'],
-    excerpt: 'Accessibility is not a feature you bolt on at the end — it is the foundation of good frontend engineering. Here is how I approach it.',
+    excerpt: 'Accessibility is not a feature you bolt on at the end — it is the foundation of thoughtful software development. Here is how I approach it.',
     content: 'When I started building websites, I thought accessibility meant adding alt tags to images and calling it a day. The more I built, the more I realized that true accessibility is about architecture, not an afterthought checklist.\n\n**Semantic HTML is 80% of the battle.** Using <button> for actions and <a> for navigation seems obvious, but you\'d be surprised how often <div> with an onClick handler replaces proper elements. Screen readers rely on semantic tags to convey meaning, hierarchy, and interactive states.\n\n**Keyboard navigation is non-negotiable.** If a user can\'t tab through your interface and interact with every element, you\'ve locked people out. I test every component I build by putting my mouse away and using only the keyboard.\n\n**ARIA labels are your friend, not a crutch.** Use them when native semantics aren\'t enough, but don\'t over-use them. A <button> with clear text content doesn\'t need an aria-label — that\'s redundant and can actually confuse assistive technologies.\n\nThe beauty of building with accessibility in mind from the start is that it usually results in cleaner, more semantic code. It forces you to think about structure before style, which is exactly the right order.\n\nI\'m still learning, but I\'ve made it a rule: if it\'s not accessible, it\'s not done.'
   },
   {

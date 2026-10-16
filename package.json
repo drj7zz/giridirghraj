@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "npm run --prefix app dev",
     "build": "npm run --prefix app build",
-    "start": "npm run --prefix app start"
+    "start": "npm run --prefix app start",
+    "dev:blog": "npm run --prefix blog dev -- -p 3001",
+    "build:blog": "npm run --prefix blog build",
+    "start:blog": "npm run --prefix blog start -- -p 3001"
   }
 }

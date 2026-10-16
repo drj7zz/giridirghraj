@@ -38,7 +38,6 @@ export default function AboutPage() {
     <div className="about-page">
       {/* ── Who I am ── */}
       <section className="about-hero" aria-labelledby="about-title">
-        <p className="section-label">01 / About</p>
         <h2 id="about-title">{profile.headline}</h2>
         <p className="about-lede">{profile.intro}</p>
         {profile.kaalyugNote && <p className="kaalyug-note">{profile.kaalyugNote}</p>}
@@ -62,7 +61,6 @@ export default function AboutPage() {
 
       {/* ── Technical focus ── */}
       <section className="about-section" aria-labelledby="focus-title">
-        <p className="section-label">02 / Technical Focus</p>
         <h2 id="focus-title">{profile.focusTitle}</h2>
         <p className="about-lede">{profile.focusIntro}</p>
 
@@ -85,7 +83,6 @@ export default function AboutPage() {
 
       {/* ── How I work / career ── */}
       <section className="about-section" aria-labelledby="career-title">
-        <p className="section-label">03 / Engineering Approach</p>
         <h2 id="career-title">{profile.careerTitle}</h2>
         <p className="about-lede">{profile.careerIntro}</p>
 

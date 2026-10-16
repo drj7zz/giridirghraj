@@ -19,7 +19,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
-  "description": "DRJ — Personal portfolio built with Next.js 14 App Router, dark blue theme, and live GitHub integration.",
+  "description": "DRJ — Developer portfolio built with Next.js 14, a dark studio theme, and live GitHub integration.",
   "author": "DRJ <giridirghraj@gmail.com>",
   "homepage": "https://giridirghraj.vercel.app",
   "repository": {

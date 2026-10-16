@@ -2,16 +2,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ThemePicker from './ThemePicker';
+import { BLOG_URL } from '../lib/site-links';
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Dashboard' },
+  { href: '/projects', label: 'Works' },
   { href: '/about', label: 'About' },
-  { href: '/work', label: 'Work' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/connect', label: 'Connect' },
-  { href: '/login', label: 'Login' },
-  { href: '/admin/login', label: 'Admin' }
+  { href: BLOG_URL, label: 'Blog' },
+  { href: '/connect', label: 'Connect' }
 ];
 
 export default function Nav() {
@@ -28,13 +25,15 @@ export default function Nav() {
           onContextMenu={(e) => e.preventDefault()}
           onDragStart={(e) => e.preventDefault()}
         />
-        <span>KAALYUG</span>
+        <span>DRJ<span className="brand-period">.</span></span>
       </Link>
 
       <div className="nav-controls">
         <nav className="nav-links" aria-label="Portfolio sections">
           {NAV_ITEMS.map(({ href, label }) => {
-            const isActive = pathname === href || (href === '/' && pathname === '/dashboard');
+            const isActive = pathname === href
+              || (href === '/projects' && pathname === '/work')
+              || (href === '/' && pathname === '/dashboard');
             return (
               <Link
                 key={href}
@@ -48,9 +47,7 @@ export default function Nav() {
             );
           })}
         </nav>
-        <div className="nav-theme-wrap">
-          <ThemePicker />
-        </div>
+        <Link className="nav-cta" href="/resume">Résumé <span aria-hidden="true">↗</span></Link>
       </div>
     </header>
   );

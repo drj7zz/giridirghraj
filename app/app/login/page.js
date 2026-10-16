@@ -2,6 +2,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { BLOG_URL, getBlogPostUrl } from '../../lib/site-links';
 import {
   User, Lock, Eye, EyeOff, ArrowRight, LogOut, Bookmark,
   MessageCircle, Sparkles, AlertCircle, CheckCircle2, RefreshCw, Trash2,
@@ -29,7 +30,7 @@ function UserLoginPageContent() {
   const [googleConfigured, setGoogleConfigured] = useState(false);
 
   // Chat in account states
-  const [dmOpen, setDmOpen] = useState(true);
+  const [dmOpen, setDmOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatDraft, setChatDraft] = useState('');
   const [chatSending, setChatSending] = useState(false);
@@ -245,7 +246,6 @@ function UserLoginPageContent() {
     return (
       <section className="section-panel" style={{ maxWidth: '680px', margin: '48px auto', padding: '0 12px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <p className="section-label">Account &amp; Sync Hub</p>
           <h2 style={{ fontSize: '32px' }}>Welcome, {user.username}</h2>
           <p style={{ color: 'var(--muted)', fontSize: '13.5px' }}>
             Your account is active and synced across <strong>Private Chat</strong> and <strong>Saved Notes</strong>.
@@ -332,7 +332,7 @@ function UserLoginPageContent() {
                     <strong>Start your conversation</strong>
                     <p>Send a direct message to DRJ. Messages are private and delivered in real-time.</p>
                     <div className="chat-prompts">
-                      {['Hi DRJ! I reviewed your projects', 'I have a frontend opportunity', 'Can we collaborate on open-source?'].map((prompt) => (
+                      {['Hi DRJ! I reviewed your projects', 'I have a development opportunity', 'Can we collaborate on open-source?'].map((prompt) => (
                         <button type="button" key={prompt} onClick={() => setChatDraft(prompt)}>{prompt}</button>
                       ))}
                     </div>
@@ -376,14 +376,14 @@ function UserLoginPageContent() {
               <h3 style={{ margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px', font: '800 16px "Space Grotesk", sans-serif' }}>
                 <Bookmark size={16} color="var(--accent)" /> Saved Engineering Notes ({savedItems.length})
               </h3>
-              <Link href="/blog" className="text-link" style={{ margin: 0, fontSize: '11px' }}>
+              <Link href={BLOG_URL} className="text-link" style={{ margin: 0, fontSize: '11px' }}>
                 Explore Blogs →
               </Link>
             </div>
 
             {savedItems.length === 0 ? (
               <p style={{ color: 'var(--muted)', fontSize: '12.5px', margin: '8px 0' }}>
-                You have not saved any blogs yet. Visit the <Link href="/blog" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Blog page</Link> and click the bookmark button on any post!
+                You have not saved any blogs yet. Visit the <Link href={BLOG_URL} style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Blog page</Link> and explore the latest notes.
               </p>
             ) : (
               <div style={{ display: 'grid', gap: '10px' }}>
@@ -401,7 +401,7 @@ function UserLoginPageContent() {
                     }}
                   >
                     <div style={{ minWidth: 0 }}>
-                      <Link href="/blog" style={{ fontWeight: 700, fontSize: '13px', color: 'var(--ink)' }}>
+                      <Link href={getBlogPostUrl(item.id)} style={{ fontWeight: 700, fontSize: '13px', color: 'var(--ink)' }}>
                         {item.title}
                       </Link>
                       <span style={{ display: 'block', font: '10px "DM Mono", monospace', color: 'var(--muted)', marginTop: '2px' }}>
@@ -445,7 +445,6 @@ function UserLoginPageContent() {
   return (
     <section className="section-panel" style={{ maxWidth: '440px', margin: '48px auto', padding: '0 12px' }}>
       <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-        <p className="section-label">User Access</p>
         <h2 style={{ fontSize: '28px', marginBottom: '8px' }}>
           {mode === 'login' ? 'Sign in to your account' : 'Create an account'}
         </h2>

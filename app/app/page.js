@@ -1,450 +1,319 @@
 'use client';
-import React, { useEffect, useState, useMemo } from 'react';
+
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { heroSignals, socialLinks as seedSocialLinks, blogPosts as seedBlogs } from '../lib/data';
-import Icon from '../components/Icon';
 import {
-  ArrowRight, Send, Smartphone, Accessibility, Users,
-  GitBranch, ExternalLink, RefreshCw, Clock, ChevronDown, ChevronUp,
-  Code2, Terminal, Braces, Bug, Cpu, GitCommit, Flame, Trophy, Sparkles,
-  Copy, Check
+  ArrowDownRight,
+  ArrowRight,
+  ArrowUpRight,
+  Code2,
+  FileText,
+  Flame,
+  GitCommit,
+  Github,
+  Layers3,
+  Mail,
+  MapPin,
+  RefreshCw,
+  Sparkles,
+  Trophy
 } from 'lucide-react';
-
-const ORBIT_ICONS = [Code2, Terminal, Braces, GitBranch, Cpu];
-
-const ICON_MAP = {
-  Smartphone,
-  Accessibility,
-  Users
-};
+import FeaturedWriting from '../components/FeaturedWriting';
+import Icon from '../components/Icon';
+import { blogPosts as seedBlogs, projects as seedProjects, socialLinks as seedSocialLinks } from '../lib/data';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const DAY_NAMES = ['Mon', 'Wed', 'Fri'];
 
 export default function DashboardPage() {
   const [activity, setActivity] = useState(null);
-  const [loadingActivity, setLoadingActivity] = useState(false);
+  const [loadingActivity, setLoadingActivity] = useState(true);
   const [topBlogs, setTopBlogs] = useState(seedBlogs.slice(0, 2));
-  const [expandedBlogId, setExpandedBlogId] = useState(null);
+  const [projects, setProjects] = useState(seedProjects.slice(0, 3));
+  const [profile, setProfile] = useState(null);
   const [hoveredCell, setHoveredCell] = useState(null);
-  const [profileImgLoaded, setProfileImgLoaded] = useState(false);
-  const [profileImgError, setProfileImgError] = useState(false);
   const [socials, setSocials] = useState(seedSocialLinks);
-  const [copiedCodeId, setCopiedCodeId] = useState(null);
-  const imgRef = React.useRef(null);
+  const [profileImgError, setProfileImgError] = useState(false);
+  const imgRef = useRef(null);
+  const heroHeadline = profile?.headline || '';
+  const heroIntro = profile?.intro || '';
 
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
-      setProfileImgLoaded(true);
+    if (imgRef.current?.complete && imgRef.current.naturalWidth === 0) {
+      setProfileImgError(true);
     }
-  }, []);
 
-  useEffect(() => {
-    async function loadData() {
+    async function loadDashboardData() {
       try {
-        setLoadingActivity(true);
-        const [resAct, resBlogs, resInfo] = await Promise.all([
+        const [activityResponse, blogsResponse, projectsResponse, infoResponse, profileResponse] = await Promise.all([
           fetch('/api/github-activity'),
           fetch('/api/blogs'),
-          fetch('/api/site-info')
+          fetch('/api/projects'),
+          fetch('/api/site-info'),
+          fetch('/api/profile')
         ]);
 
-        if (resAct.ok) {
-          const actData = await resAct.json();
-          setActivity(actData);
+        if (activityResponse.ok) {
+          setActivity(await activityResponse.json());
         }
 
-        if (resBlogs.ok) {
-          const blogData = await resBlogs.json();
-          setTopBlogs((blogData.data || []).slice(0, 2));
+        if (blogsResponse.ok) {
+          const result = await blogsResponse.json();
+          if (Array.isArray(result.data)) setTopBlogs(result.data.slice(0, 2));
         }
 
-        if (resInfo.ok) {
-          const infoData = await resInfo.json();
-          if (Array.isArray(infoData?.data?.socialLinks) && infoData.data.socialLinks.length > 0) {
-            setSocials(infoData.data.socialLinks);
+        if (projectsResponse.ok) {
+          const result = await projectsResponse.json();
+          if (Array.isArray(result.data)) setProjects(result.data.slice(0, 3));
+        }
+
+        if (infoResponse.ok) {
+          const result = await infoResponse.json();
+          if (Array.isArray(result?.data?.socialLinks) && result.data.socialLinks.length > 0) {
+            setSocials(result.data.socialLinks);
           }
         }
-      } catch (_err) {
-        // Handled gracefully
+
+        if (profileResponse.ok) {
+          const result = await profileResponse.json();
+          if (result.data) setProfile(result.data);
+        }
+      } catch (error) {
+        console.error('Unable to load some dashboard content.', error);
       } finally {
         setLoadingActivity(false);
       }
     }
-    loadData();
+
+    loadDashboardData();
   }, []);
-
-  const toggleBlog = (id) => {
-    setExpandedBlogId(expandedBlogId === id ? null : id);
-  };
-
-  const copySnippet = (codeText, snippetId) => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(codeText);
-      setCopiedCodeId(snippetId);
-      setTimeout(() => setCopiedCodeId(null), 2000);
-    }
-  };
 
   const calendar = activity?.contributionCalendar;
   const streak = activity?.contributionStreak || { current: 0, longest: 0, total: 0 };
   const weeks = calendar?.weeks || [];
 
   const monthPositions = useMemo(() => {
-    if (!weeks.length) return [];
     const months = [];
     let lastMonth = -1;
-    weeks.forEach((week, wIdx) => {
-      const firstValidDay = week.contributionDays?.find((d) => d && d.date);
-      if (firstValidDay) {
-        const d = new Date(firstValidDay.date);
-        const m = d.getMonth();
-        if (m !== lastMonth) {
-          months.push({ name: MONTH_NAMES[m], colIndex: wIdx });
-          lastMonth = m;
-        }
+
+    weeks.forEach((week, weekIndex) => {
+      const firstDay = week.contributionDays?.find((day) => day?.date);
+      if (!firstDay) return;
+
+      const month = new Date(firstDay.date).getMonth();
+      if (month !== lastMonth) {
+        months.push({ name: MONTH_NAMES[month], colIndex: weekIndex });
+        lastMonth = month;
       }
     });
+
     return months;
   }, [weeks]);
 
-  const formatCellDate = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    } catch {
-      return dateStr;
-    }
-  };
+  const formatCellDate = (date) => new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
 
   return (
-    <>
-      {/* ─── Hero Section ─── */}
-      <section className="hero" aria-labelledby="hero-title">
-        <p className="eyebrow">DRJ / Dirghraj Giri / Developer / Nepal</p>
-        <h1 id="hero-title" className="hero-title-banner">
-          <img
-            src="/assets/images/readme-banner.svg"
-            alt="Interfaces with clarity and intent."
-            draggable={false}
-            onContextMenu={(e) => e.preventDefault()}
-            onDragStart={(e) => e.preventDefault()}
-          />
-        </h1>
-
-        <div className="hero-split">
-          <figure className="hero-portrait hero-portrait--inline" aria-label="Portrait of Dirghraj Giri">
-            <div className="hero-orbit" aria-hidden="true">
-              {ORBIT_ICONS.map((OrbitIcon, idx) => (
-                <span className="hero-orbit-icon" key={idx}>
-                  <OrbitIcon size={14} strokeWidth={2} />
-                </span>
-              ))}
-            </div>
-
-            <div className="hero-portrait-frame">
-              <div className="hero-portrait-glow-halo" aria-hidden="true" />
-              <div className="hero-portrait-border-line" aria-hidden="true" />
-              <div className="hero-portrait-inner">
-                {!profileImgLoaded && !profileImgError && (
-                  <div className="hero-portrait-skeleton" aria-hidden="true" />
-                )}
-                {!profileImgError ? (
-                  <img
-                    ref={imgRef}
-                    src="/assets/images/profile.jpg"
-                    alt="Dirghraj Giri (DRJ) - Frontend Engineer"
-                    width={260}
-                    height={260}
-                    className="hero-portrait-img"
-                    draggable={false}
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                    onLoad={() => setProfileImgLoaded(true)}
-                    onError={() => setProfileImgError(true)}
-                  />
-                ) : (
-                  <div className="hero-portrait-fallback" role="img" aria-label="Dirghraj Giri avatar fallback">
-                    <span className="fallback-monogram">DG</span>
-                    <span className="fallback-role">DRJ7ZZ</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </figure>
-
-          <div className="hero-copy-wrap">
-            <p className="hero-copy">
-              Welcome to the official developer portfolio of <strong>Dirghraj Giri</strong> (widely known as <strong>DRJ7ZZ</strong> or <strong>DRJ</strong>), a professional <strong>frontend developer</strong> and software engineer from Nepal. I specialize in designing and engineering accessible, standards-compliant web applications built with <strong>JavaScript</strong>, <strong>TypeScript</strong>, <strong>Next.js</strong>, and modern <strong>React</strong> architectures.
-            </p>
-            <p className="hero-copy">
-              Every digital interface I craft embodies <em>pixels with purpose and motion with meaning</em> — ensuring visual precision, fast load speeds, resilient keyboard navigation, and seamless responsiveness across desktop computers, tablets, and mobile devices. Whether delivering modular UI systems or architecting high-velocity open-source tools with KAALYUG, my work is engineered for production-ready scale, maintainability, and search visibility.
-            </p>
-            <div className="cta-row">
-              <Link className="button" href="/about">
-                Learn about me <ArrowRight size={14} />
-              </Link>
-              <Link className="button ghost" href="/connect">
-                <Send size={13} /> Start a conversation
-              </Link>
-            </div>
-            <div className="hero-signals" aria-label="Professional strengths">
-              {heroSignals.map(([iconKey, label]) => {
-                const IconComp = ICON_MAP[iconKey] || Users;
-                return (
-                  <span key={label}>
-                    <IconComp size={13} /> {label}
-                  </span>
-                );
-              })}
-            </div>
-
-            {/* Social Media Links on Dashboard */}
-            <div className="hero-social-links" aria-label="Connect with DRJ">
-              {socials.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  target={link.url?.startsWith('mailto:') ? undefined : '_blank'}
-                  rel="noopener noreferrer"
-                  className="hero-social-badge"
-                  title={`Open ${link.name}`}
-                  aria-label={link.name}
-                >
-                  <Icon name={link.icon} size={13} />
-                  <span>{link.name}</span>
-                </a>
-              ))}
-            </div>
+    <div className="home-page">
+      <section className="hero hero-redesign" aria-labelledby="hero-title">
+        <div className="hero-copy-wrap">
+          <p className="eyebrow hero-kicker"><span className="status-dot" /> Independent developer · Nepal</p>
+          <h1 id="hero-title" className="hero-title">
+            {heroHeadline}
+          </h1>
+          <p className="hero-intro">
+            {heroIntro}
+          </p>
+          <div className="cta-row">
+            <Link className="button" href="/projects">
+              Explore my work <ArrowUpRight size={16} />
+            </Link>
+            <Link className="button ghost" href="/connect">
+              Connect <ArrowRight size={15} />
+            </Link>
           </div>
-
+          <div className="hero-social-links" aria-label="Social links">
+            {socials.map((link) => (
+              <a
+                key={`${link.name}-${link.url}`}
+                href={link.url}
+                target={link.url?.startsWith('mailto:') ? undefined : '_blank'}
+                rel={link.url?.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                className="hero-social-badge"
+                aria-label={link.name}
+                title={link.name}
+              >
+                <Icon name={link.icon} size={15} />
+                <span>{link.name}</span>
+              </a>
+            ))}
+          </div>
         </div>
+
+        <figure className="hero-art" aria-label="Portrait of Dirghraj Giri">
+          <div className="hero-art-grid" aria-hidden="true" />
+          <div className="hero-art-orbit hero-art-orbit--outer" aria-hidden="true" />
+          <div className="hero-art-orbit hero-art-orbit--inner" aria-hidden="true" />
+          <div className="hero-art-image">
+            {profileImgError ? (
+              <div className="hero-art-fallback" role="img" aria-label="Dirghraj Giri">
+                DRJ
+              </div>
+            ) : (
+              <img
+                ref={imgRef}
+                src="/assets/images/profile-cutout.png"
+                alt="Dirghraj Giri"
+                width={486}
+                height={780}
+                onError={() => setProfileImgError(true)}
+              />
+            )}
+          </div>
+          <div className="hero-art-caption">
+            <span className="hero-art-caption-icon"><Code2 size={16} /></span>
+            <span><strong>Software developer</strong><br />building useful things</span>
+          </div>
+          <div className="hero-art-location"><MapPin size={13} /> Madhesh, Nepal</div>
+          <span className="hero-art-sparkle hero-art-sparkle--one" aria-hidden="true">✳</span>
+          <span className="hero-art-sparkle hero-art-sparkle--two" aria-hidden="true">✦</span>
+        </figure>
+
+        <a className="hero-scroll" href="#selected-work">
+          <span>Scroll to explore</span><ArrowDownRight size={15} />
+        </a>
       </section>
 
-      {/* ─── Top Engineering Notes (Live from Backend) ─── */}
-      <section className="blog-section" aria-labelledby="dashboard-blog-title">
-        <div className="dashboard-heading">
+      <section className="home-section projects-section home-projects" id="selected-work" aria-labelledby="projects-title">
+        <div className="section-heading">
           <div>
-            <p className="section-label">01 / Engineering Notes</p>
-            <h2 id="dashboard-blog-title">Featured Writing</h2>
+            <h2 id="projects-title">Selected work<span className="heading-period">.</span></h2>
           </div>
-          <Link className="view-all-link" href="/blog">
-            All Notes <ArrowRight size={14} />
+          <Link className="view-all-link" href="/projects">
+            All works <ArrowUpRight size={15} />
           </Link>
         </div>
 
-        {loadingActivity && topBlogs.length === 0 && (
-          <div className="blog-skeleton-list">
-            {[1, 2].map((i) => (
-              <div className="blog-skeleton-card" key={i}>
-                <div className="blog-skeleton-meta">
-                  <div className="skeleton-shimmer" style={{ width: '80px', height: '12px' }} />
-                  <div className="skeleton-shimmer" style={{ width: '70px', height: '12px' }} />
-                </div>
-                <div className="skeleton-shimmer blog-skeleton-title" />
-                <div className="skeleton-shimmer blog-skeleton-desc" />
-                <div className="blog-skeleton-footer">
-                  <div className="skeleton-shimmer" style={{ width: '120px', height: '20px', borderRadius: '4px' }} />
-                  <div className="skeleton-shimmer" style={{ width: '80px', height: '16px', borderRadius: '4px' }} />
-                </div>
+        <div className="home-project-grid">
+          {projects.map((project, index) => (
+            <article className="home-project-card" data-tone={index % 3} key={project.id || project.name}>
+              <div className="home-project-card-top">
+                <span className="home-project-number">0{index + 1}</span>
+                <span className="home-project-mark" aria-hidden="true">
+                  {index === 0 ? <Layers3 size={20} /> : index === 1 ? <Code2 size={20} /> : <Sparkles size={20} />}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-
-        {!loadingActivity && topBlogs.length === 0 && (
-          <p style={{ color: 'var(--muted)', fontSize: '13px' }}>
-            No featured notes published yet.
-          </p>
-        )}
-
-        <div className="blog-list">
-          {topBlogs.map((post) => {
-            const isExpanded = expandedBlogId === post.id;
-            return (
-              <article className="blog-card" key={post.id}>
-                <div
-                  className="blog-card-header"
-                  onClick={() => toggleBlog(post.id)}
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isExpanded}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleBlog(post.id); }}
-                >
-                  <div className="blog-card-meta">
-                    <span>{post.date}</span>
-                    <span className="blog-read-time">
-                      <Clock size={11} /> {post.readTime}
-                    </span>
-                  </div>
-                  <h3>{post.title}</h3>
-                  <p className="blog-excerpt">{post.excerpt}</p>
-                  <div className="blog-card-footer">
-                    <div className="blog-tags">
-                      {Array.isArray(post.tags) ? post.tags.map((tag) => (
-                        <span className="blog-tag" key={tag}>{tag}</span>
-                      )) : (
-                        <span className="blog-tag">{post.tags}</span>
-                      )}
-                    </div>
-                    <span className="blog-toggle">
-                      {isExpanded ? (
-                        <>Collapse <ChevronUp size={13} /></>
-                      ) : (
-                        <>Read note <ChevronDown size={13} /></>
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                {isExpanded && (
-                  <div className="blog-content">
-                    {post.content && post.content.split('\n\n').map((paragraph, idx) => {
-                      if (paragraph.startsWith('```')) {
-                        const langMatch = paragraph.match(/^```([a-zA-Z0-9]+)?/);
-                        const lang = langMatch && langMatch[1] ? langMatch[1] : 'code';
-                        const codeText = paragraph.replace(/```[a-zA-Z0-9]*\n?/g, '').trim();
-                        const snippetKey = `${post.id}-snip-${idx}`;
-                        const isCopied = copiedCodeId === snippetKey;
-
-                        return (
-                          <div className="code-block-wrapper" key={idx}>
-                            <div className="code-block-header">
-                              <span>{lang}</span>
-                              <button
-                                type="button"
-                                className={`code-copy-btn ${isCopied ? 'copied' : ''}`}
-                                onClick={() => copySnippet(codeText, snippetKey)}
-                                aria-label="Copy snippet to clipboard"
-                              >
-                                {isCopied ? <><Check size={12} /> Copied!</> : <><Copy size={12} /> Copy</>}
-                              </button>
-                            </div>
-                            <pre>
-                              <code>{codeText}</code>
-                            </pre>
-                          </div>
-                        );
-                      }
-                      if (paragraph.startsWith('**')) {
-                        const parts = paragraph.split('**');
-                        return (
-                          <p key={idx}>
-                            <strong>{parts[1]}</strong> {parts.slice(2).join('')}
-                          </p>
-                        );
-                      }
-                      return <p key={idx}>{paragraph}</p>;
-                    })}
-                  </div>
+              <div className="home-project-card-copy">
+                <p className="home-project-stack">{Array.isArray(project.stack) ? project.stack.join(' · ') : project.stack || 'Web project'}</p>
+                <h3>{project.name}</h3>
+                <p className="home-project-description">{project.description}</p>
+              </div>
+              <div className="home-project-links">
+                {project.live && (
+                  <a href={project.live} target="_blank" rel="noopener noreferrer">
+                    Live project <ArrowUpRight size={14} />
+                  </a>
                 )}
-              </article>
-            );
-          })}
+                {project.code && (
+                  <a href={project.code} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.name} source code`}>
+                    <Github size={15} /> Source
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* ─── Live GitHub Activity & Streak ─── */}
-      <section className="github-panel" aria-labelledby="dashboard-github-title">
-        <div className="github-heading">
+      <section className="home-founder" aria-label="KAALYUG">
+        <span className="home-founder-mark"><Layers3 size={20} /></span>
+        <div className="home-founder-copy">
+          <strong>Founder of KAALYUG</strong>
+          <p>{profile?.kaalyugNote || 'Building practical open-source software and tools for the web.'}</p>
+        </div>
+        <a href="https://kaalyug.vercel.app" target="_blank" rel="noopener noreferrer">
+          Visit KAALYUG <ArrowUpRight size={15} />
+        </a>
+      </section>
+
+      <FeaturedWriting posts={topBlogs} />
+
+      <section className="home-section github-panel home-activity" aria-labelledby="dashboard-github-title">
+        <div className="section-heading github-heading">
           <div>
-            <p className="section-label">02 / Production Activity</p>
-            <h2 id="dashboard-github-title">GitHub Contributions &amp; Velocity</h2>
-            <p className="github-intro">
-              Live engineering metrics, active repository code streams, and contribution frequency synchronized directly from GitHub.
-            </p>
+            <h2 id="dashboard-github-title">Building in public<span className="heading-period">.</span></h2>
+            <p className="github-intro">A snapshot of my recent work and open-source contributions.</p>
           </div>
           <Link className="view-all-link" href="/work">
-            Full Activity <ArrowRight size={14} />
+            GitHub activity <ArrowUpRight size={15} />
           </Link>
         </div>
 
         <div className="streak-stats">
           <div className="streak-stat-item">
-            <div className="streak-stat-header">
-              <GitCommit size={15} className="streak-stat-icon" />
-              <span>Total Contributions</span>
-            </div>
+            <div className="streak-stat-header"><GitCommit size={15} /><span>Contributions</span></div>
             <strong>{streak.total || 0}</strong>
           </div>
           <div className="streak-stat-item">
-            <div className="streak-stat-header">
-              <Flame size={15} className="streak-stat-icon" />
-              <span>Current Streak</span>
-            </div>
-            <strong>{streak.current || 0} <em className="streak-unit">days</em></strong>
+            <div className="streak-stat-header"><Flame size={15} /><span>Current streak</span></div>
+            <strong>{streak.current || 0}<em className="streak-unit"> days</em></strong>
           </div>
           <div className="streak-stat-item">
-            <div className="streak-stat-header">
-              <Trophy size={15} className="streak-stat-icon" />
-              <span>Longest Streak</span>
-            </div>
-            <strong>{streak.longest || 0} <em className="streak-unit">days</em></strong>
+            <div className="streak-stat-header"><Trophy size={15} /><span>Longest streak</span></div>
+            <strong>{streak.longest || 0}<em className="streak-unit"> days</em></strong>
           </div>
         </div>
 
-        {weeks.length > 0 && (
+        {weeks.length > 0 ? (
           <div className="graph-container">
             <div className="graph-tooltip-banner" aria-live="polite">
               {hoveredCell ? (
                 <>
-                  <span className="tooltip-count">
-                    <strong>{hoveredCell.count}</strong> {hoveredCell.count === 1 ? 'contribution' : 'contributions'}
-                  </span>
+                  <span className="tooltip-count"><strong>{hoveredCell.count}</strong> {hoveredCell.count === 1 ? 'contribution' : 'contributions'}</span>
                   <span className="tooltip-date">on {formatCellDate(hoveredCell.date)}</span>
                 </>
               ) : (
-                <span className="tooltip-placeholder">Hover or tap any square to inspect activity</span>
+                <span className="tooltip-placeholder">Explore the last year of activity</span>
               )}
             </div>
 
             <div className="graph-scroll-area">
               <div className="graph-table-layout">
-                {/* Synchronized Month Labels */}
                 <div className="graph-months-row" aria-hidden="true">
                   <div className="graph-days-spacer" />
                   <div className="graph-months-track">
-                    {monthPositions.map((m, idx) => (
+                    {monthPositions.map((month, index) => (
                       <span
-                        key={`${m.name}-${idx}`}
                         className="graph-month-label"
-                        style={{ gridColumnStart: m.colIndex + 1 }}
+                        key={`${month.name}-${index}`}
+                        style={{ gridColumnStart: month.colIndex + 1 }}
                       >
-                        {m.name}
+                        {month.name}
                       </span>
                     ))}
                   </div>
                 </div>
-
-                {/* Day Labels & Grid Columns */}
                 <div className="graph-body-row">
                   <div className="graph-days-label" aria-hidden="true">
-                    <span>Mon</span>
-                    <span>Wed</span>
-                    <span>Fri</span>
+                    <span>Mon</span><span>Wed</span><span>Fri</span>
                   </div>
-                  <div className="graph-grid" role="grid" aria-label="Contribution grid for past year">
-                    {weeks.map((week, wIdx) => (
-                      <div className="graph-column" key={wIdx} role="row">
-                        {week.contributionDays.map((day, dIdx) => {
-                          const count = day.contributionCount;
-                          let level = '0';
-                          if (count > 0 && count <= 2) level = '1';
-                          else if (count > 2 && count <= 5) level = '2';
-                          else if (count > 5 && count <= 9) level = '3';
-                          else if (count > 9) level = '4';
+                  <div className="graph-grid" role="grid" aria-label="GitHub contributions over the past year">
+                    {weeks.map((week, weekIndex) => (
+                      <div className="graph-column" key={weekIndex} role="row">
+                        {(week.contributionDays || []).map((day) => {
+                          const count = day.contributionCount || 0;
+                          const level = count === 0 ? 0 : count <= 2 ? 1 : count <= 5 ? 2 : count <= 9 ? 3 : 4;
                           const isHovered = hoveredCell?.date === day.date;
                           return (
                             <button
                               type="button"
-                              key={dIdx}
+                              key={day.date}
                               className={`graph-cell level-${level} ${isHovered ? 'is-active' : ''}`}
-                              title={`${day.date}: ${count} contributions`}
                               aria-label={`${count} contributions on ${day.date}`}
                               onMouseEnter={() => setHoveredCell({ date: day.date, count })}
                               onMouseLeave={() => setHoveredCell(null)}
-                              onClick={() => setHoveredCell({ date: day.date, count })}
                               onFocus={() => setHoveredCell({ date: day.date, count })}
                               onBlur={() => setHoveredCell(null)}
                             />
@@ -456,90 +325,38 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-
             <div className="graph-footer">
-              <span className="graph-scroll-hint">← Scroll horizontally to explore entire year →</span>
-              <div className="graph-legend">
+              <span className="graph-scroll-hint">One square, one day</span>
+              <div className="graph-legend" aria-label="Contribution intensity">
                 <span>Less</span>
-                <span className="graph-cell level-0" aria-hidden="true" />
-                <span className="graph-cell level-1" aria-hidden="true" />
-                <span className="graph-cell level-2" aria-hidden="true" />
-                <span className="graph-cell level-3" aria-hidden="true" />
-                <span className="graph-cell level-4" aria-hidden="true" />
+                {[0, 1, 2, 3, 4].map((level) => <span key={level} className={`graph-cell level-${level}`} aria-hidden="true" />)}
                 <span>More</span>
               </div>
             </div>
           </div>
-        )}
-
-        {loadingActivity && !weeks.length && (
-          <div className="graph-skeleton-wrap">
-            <p style={{ color: 'var(--muted)', marginBottom: '12px', font: '11px "DM Mono", monospace' }}>
-              <RefreshCw size={12} className="spin-icon" style={{ display: 'inline', marginRight: '6px' }} />
-              Synchronizing GitHub activity stream...
-            </p>
-            <div className="graph-skeleton-grid" aria-hidden="true" />
+        ) : (
+          <div className="activity-empty" aria-live="polite">
+            {loadingActivity ? (
+              <><RefreshCw size={15} className="spin-icon" /> Loading recent activity…</>
+            ) : (
+              <>GitHub activity is taking a short break. Visit my profile for the latest.</>
+            )}
           </div>
         )}
+        <a className="activity-profile-link" href="https://github.com/drj7zz" target="_blank" rel="noopener noreferrer">
+          <Github size={15} /> Follow along on GitHub <ArrowUpRight size={14} />
+        </a>
       </section>
 
-      {/* ─── Architectural Overview & Core Engineering Highlights ─── */}
-      <section className="section-panel" style={{ marginTop: '48px', padding: '32px 28px', border: '1px solid var(--line)', borderRadius: '14px', background: 'var(--bg)' }}>
-        <p className="section-label">03 / Engineering Blueprint</p>
-        <h2 style={{ margin: '0 0 12px', font: '700 clamp(22px, 3vw, 28px) / 1.2 Sora, sans-serif', color: 'var(--ink)' }}>
-          Modern Frontend Architecture &amp; Production Philosophy
-        </h2>
-        <p style={{ margin: '0 0 18px', color: 'var(--muted)', fontSize: '14.5px', lineHeight: 1.8 }}>
-          As a dedicated frontend developer, Dirghraj Giri (DRJ7ZZ) crafts resilient browser solutions that prioritize real-world utility over superficial complexity. Every web product integrates automated continuous integration, strict TypeScript typing, WCAG 2.1 AA accessibility standards, and search engine discoverability to guarantee sustainable performance and rapid indexing across Google and search crawlers worldwide.
-        </p>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: '24px' }}>
-          <div style={{ padding: '18px', border: '1px solid var(--line)', borderRadius: '10px', background: 'rgba(128, 128, 128, 0.03)' }}>
-            <h3 style={{ margin: '0 0 8px', fontSize: '15px', font: '700 15px "Space Grotesk", sans-serif', color: 'var(--accent)' }}>
-              Accessible &amp; Semantic HTML5
-            </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.7, color: 'var(--muted)' }}>
-              Structuring clean DOM hierarchies with native landmarks, keyboard focus management, and descriptive ARIA semantics to ensure equal access for all human and automated users.
-            </p>
-          </div>
-
-          <div style={{ padding: '18px', border: '1px solid var(--line)', borderRadius: '10px', background: 'rgba(128, 128, 128, 0.03)' }}>
-            <h3 style={{ margin: '0 0 8px', fontSize: '15px', font: '700 15px "Space Grotesk", sans-serif', color: 'var(--accent)' }}>
-              High-Velocity Performance
-            </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.7, color: 'var(--muted)' }}>
-              Optimizing Core Web Vitals (LCP, FID, CLS), server-side rendering with Next.js App Router, minimal client bundle sizes, and hardware-accelerated animations for buttery 120fps mobile rendering.
-            </p>
-          </div>
-
-          <div style={{ padding: '18px', border: '1px solid var(--line)', borderRadius: '10px', background: 'rgba(128, 128, 128, 0.03)' }}>
-            <h3 style={{ margin: '0 0 8px', fontSize: '15px', font: '700 15px "Space Grotesk", sans-serif', color: 'var(--accent)' }}>
-              Open-Source Collaborative Vision
-            </h3>
-            <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.7, color: 'var(--muted)' }}>
-              Active maintainer of the KAALYUG project ecosystem. Contributing transparent commit histories, peer code reviews, and reusable developer utilities on GitHub to foster open knowledge sharing.
-            </p>
-          </div>
+      <section className="home-contact">
+        <div className="home-contact-copy">
+          <h2>Let’s make it<br /><span>matter.</span></h2>
         </div>
-
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center', marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--line)' }}>
-          <Link href="/work" className="button" style={{ height: '38px', fontSize: '11px' }}>
-            Explore Featured Projects <ArrowRight size={13} />
-          </Link>
-          <Link href="/about" className="text-link" style={{ margin: 0, fontSize: '12px' }}>
-            Read Professional Background &amp; Story →
-          </Link>
-          <a
-            href="https://github.com/drj7zz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-link"
-            style={{ margin: 0, fontSize: '12px' }}
-          >
-            Inspect GitHub Repositories (@drj7zz) <ExternalLink size={12} style={{ display: 'inline', verticalAlign: '-1px' }} />
-          </a>
-        </div>
+        <Link href="/connect" className="home-contact-link">
+          <span>Connect</span><Mail size={18} />
+        </Link>
+        <Link href="/resume" className="home-resume-link"><FileText size={17} /> View résumé</Link>
       </section>
-    </>
+    </div>
   );
 }

@@ -65,8 +65,7 @@ export default function WorkPage() {
     <div className="work-page">
       {/* ═══ Live Repositories with Source & Live Demo ═══ */}
       <section className="work-projects" aria-labelledby="work-projects-title">
-        <p className="section-label">01 / Live Repositories &amp; Demos</p>
-        <h2 id="work-projects-title">Live repositories, source code &amp; deployed demos.</h2>
+        <h2 id="work-projects-title">Works, source code &amp; live demos.</h2>
         <p className="work-lede">
           Production applications, interactive browser architectures, and open-source systems with inspectable source code and live deployed demos.
         </p>
@@ -107,7 +106,6 @@ export default function WorkPage() {
       <section className="work-github" aria-labelledby="work-github-title">
         <div className="github-heading">
           <div>
-            <p className="section-label">02 / GitHub Activity &amp; Velocity</p>
             <h2 id="work-github-title">Continuous integration &amp; open source.</h2>
             <p className="work-lede">
               Live repositories, contribution calendar, and engineering velocity synchronized directly from GitHub.

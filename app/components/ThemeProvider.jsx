@@ -1,24 +1,33 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+/**
+ * Single-theme provider.
+ * The site ships one design language only: "studio" — deep ink, bright
+ * citron, and editorial typography. Kept as a context so components can read `theme`
+ * without code churn. `setTheme`/`cycleTheme` are no-ops.
+ */
+
+const THEME = 'studio';
+
 const ThemeContext = createContext({
-  theme: 'maximalist',
-  themes: ['maximalist', 'claude', 'dark', 'neon', 'glass', 'paper'],
-  setTheme: () => {}
+  theme: THEME,
+  themes: [THEME],
+  setTheme: () => { },
+  cycleTheme: () => { },
+  mounted: false
 });
 
-const THEMES = ['maximalist', 'claude', 'dark', 'neon', 'glass', 'paper'];
-
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState] = useState('maximalist');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Default to 'maximalist' theme
-    const saved = localStorage.getItem('drj-theme');
-    const initial = THEMES.includes(saved) ? saved : 'maximalist';
-    setThemeState(initial);
-    document.documentElement.setAttribute('data-theme', initial);
+    document.documentElement.setAttribute('data-theme', THEME);
+    try {
+      localStorage.setItem('drj-theme', THEME);
+    } catch (e) {
+      /* storage unavailable — non-fatal */
+    }
     setMounted(true);
 
     // Global protection against image copying, context menu, and drag transfer
@@ -43,41 +52,11 @@ export function ThemeProvider({ children }) {
     };
   }, []);
 
-  const setTheme = (nextTheme) => {
-    if (!THEMES.includes(nextTheme)) return;
-    const root = document.documentElement;
-    const directionClass = nextTheme === 'dark' ? 'theme-to-dark' : 'theme-to-light';
-    const applyTheme = () => {
-      setThemeState(nextTheme);
-      root.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('drj-theme', nextTheme);
-    };
-
-    const clearTransitionClasses = () => {
-      root.classList.remove('theme-transitioning', 'theme-to-dark', 'theme-to-light');
-    };
-
-    root.classList.add('theme-transitioning', directionClass);
-    const viewTransition = document.startViewTransition?.(applyTheme);
-
-    if (viewTransition) {
-      viewTransition.finished.finally(clearTransitionClasses);
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      applyTheme();
-      window.setTimeout(clearTransitionClasses, 650);
-    });
-  };
-
-  const cycleTheme = () => {
-    const idx = THEMES.indexOf(theme);
-    setTheme(THEMES[(idx + 1) % THEMES.length]);
-  };
+  const setTheme = () => { };
+  const cycleTheme = () => { };
 
   return (
-    <ThemeContext.Provider value={{ theme, themes: THEMES, cycleTheme, setTheme, mounted }}>
+    <ThemeContext.Provider value={{ theme: THEME, themes: [THEME], setTheme, cycleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );

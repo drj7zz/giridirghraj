@@ -19,3 +19,21 @@ services:
         generateValue: true
       - key: GITHUB_TOKEN
         sync: false
+      - key: NEXT_PUBLIC_BLOG_URL
+        sync: false
+  - type: web
+    name: drj7zz-blog
+    runtime: node
+    plan: free
+    rootDir: blog
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: NEXT_PUBLIC_PORTFOLIO_URL
+        sync: false
+      - key: NEXT_PUBLIC_BLOG_URL
+        sync: false

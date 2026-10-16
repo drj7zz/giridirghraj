@@ -5,18 +5,21 @@ import { getAdminSession } from '../../../lib/auth';
 import { facts as seedFacts, skills as seedSkills, careerStrengths as seedStrengths } from '../../../lib/data';
 
 const DEFAULT_PROFILE = {
-  headline: 'Designed to be useful. Built to last.',
+  headline: 'Software developer focused on practical web experiences.',
   intro:
-    'I work where frontend engineering meets visual clarity. My goal is to create web interfaces that communicate quickly, adapt gracefully across devices, and remain easy for teams to evolve.',
+    'I’m Dirghraj Giri (DRJ / drj7zz), a developer who likes learning through practical work on the web.',
   kaalyugNote:
-    'Founder of KAALYUG: an open-source web initiative engineering practical browser tools, decentralized financial interfaces, and high-performance digital systems built for accessibility, reliability, and modern web standards.',
+    'Founder of KAALYUG, an open-source project exploring practical software and tools for the web.',
+  resumeRole: 'Software Developer · Founder of KAALYUG',
+  resumeEducation: 'Bachelor of Information Technology (BIT)',
+  resumeSkills: ['JavaScript', 'TypeScript', 'React', 'Next.js', 'MongoDB', 'Git', 'Software Architecture', 'Web Accessibility'],
   focusTitle: 'Core competencies & technical stack.',
   focusIntro:
-    'Engineering resilient frontend systems centered on browser standards, performant JavaScript, accessible interfaces, and scalable architectures.',
-  careerTitle: 'Engineering dependable frontend solutions.',
+    'Building reliable software with JavaScript, thoughtful interface design, accessibility, and maintainable architecture.',
+  careerTitle: 'Building dependable software.',
   careerIntro:
     'Delivering thoughtful implementation, scalable architecture, and production-grade user experiences with strong technical ownership and collaborative execution.',
-  availability: 'Open to frontend engineering roles, contract work, and technical collaboration.',
+  availability: 'Open to software development roles, project work, and technical collaboration.',
   facts: seedFacts,
   skills: seedSkills,
   strengths: seedStrengths

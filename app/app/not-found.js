@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Home, Compass, GitBranch, Mail } from 'lucide-react';
+import { BLOG_URL } from '../lib/site-links';
 
 export default function NotFound() {
   return (
@@ -33,7 +34,7 @@ export default function NotFound() {
         <span>·</span>
         <Link href="/work" style={{ color: 'inherit' }}>Work</Link>
         <span>·</span>
-        <Link href="/blog" style={{ color: 'inherit' }}>Notes</Link>
+        <Link href={BLOG_URL} style={{ color: 'inherit' }}>Notes</Link>
         <span>·</span>
         <Link href="/connect" style={{ color: 'inherit' }}>Connect</Link>
       </div>

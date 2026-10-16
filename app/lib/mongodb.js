@@ -1,10 +1,4 @@
 import { MongoClient } from 'mongodb';
-import dns from 'dns';
-
-// Configure DNS servers to ensure reliable SRV record resolution across all environments
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (_e) {}
 
 const uri = process.env.MONGODB_URI;
 const options = {

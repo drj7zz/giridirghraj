@@ -11,7 +11,7 @@ export default function ConnectPage() {
   // Chat state
   const [chatUser, setChatUser] = useState(null);
   const [chatChecking, setChatChecking] = useState(true);
-  const [dmOpen, setDmOpen] = useState(true);
+  const [dmOpen, setDmOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [authForm, setAuthForm] = useState({ username: '', password: '', remember: true });
   const [showPassword, setShowPassword] = useState(false);
@@ -200,10 +200,10 @@ export default function ConnectPage() {
   return (
     <div className="connect-wrapper">
       <header className="connect-header">
-        <p className="section-label">07 / Contact &amp; Connect</p>
-        <h2 id="connect-title">Let us build something impactful.</h2>
+        <h1 id="connect-title">Connect</h1>
         <p className="connect-lede">
-          Available for frontend engineering opportunities, contract work, open-source initiatives, and technical consulting.
+          I’m Dirghraj, a developer from Nepal and founder of KAALYUG. For project enquiries,
+          development opportunities, or a good idea, choose the channel that works for you.
         </p>
       </header>
 
@@ -214,7 +214,7 @@ export default function ConnectPage() {
             <span className="chat-closed-label">Direct Channel (Closed)</span>
             <h3 className="chat-closed-title">Direct Messages with DRJ</h3>
             <p className="chat-closed-sub">
-              {chatUser ? `Thread active for ${chatUser.username}. Click Open DM to chat.` : 'Private thread closed. Click Open DM to authenticate and chat.'}
+              {chatUser ? `Your private thread is ready, ${chatUser.username}. Open it whenever you want to chat.` : 'For a private conversation, open the message panel when you are ready.'}
             </p>
           </div>
           <button type="button" className="button" onClick={() => setDmOpen(true)}>
@@ -270,7 +270,7 @@ export default function ConnectPage() {
           <form className="chat-auth" onSubmit={handleChatAuth}>
             {authNotice && <div className="chat-success"><Check size={14} /> {authNotice}</div>}
             <p className="chat-hint">
-              <strong>Direct Communication Channel:</strong> Authenticate or register an account to initiate a direct message thread. Messages are securely stored and monitored directly by DRJ.
+              <strong>Start a private conversation.</strong> Sign in or create an account to message me. Your messages stay in your personal chat thread.
             </p>
             {authError && <div className="chat-error">{authError}</div>}
             <div className="chat-auth-choice" role="tablist" aria-label="Choose a chat sign-in method">
@@ -349,7 +349,7 @@ export default function ConnectPage() {
                   <strong>Start the conversation</strong>
                   <p>Ask about a project, collaboration, or anything you found interesting here.</p>
                   <div className="chat-prompts">
-                    {['Tell me about your latest project', 'I have a collaboration idea', 'Can we talk about frontend work?'].map((prompt) => (
+                    {['Tell me about your latest project', 'I have a collaboration idea', 'Can we talk about a development idea?'].map((prompt) => (
                       <button type="button" key={prompt} onClick={() => usePrompt(prompt)}>{prompt}</button>
                     ))}
                   </div>
@@ -389,8 +389,8 @@ export default function ConnectPage() {
         <div className="connect-direct-head">
           <span className="connect-direct-icon"><Radio size={18} /></span>
           <div>
-            <h3 id="connect-subhead">Direct Contact</h3>
-            <p>Email works best — send a message or copy my address.</p>
+            <h3 id="connect-subhead">Choose how to reach me</h3>
+            <p>Email is best for opportunities and project details. Social links are there for a quick hello.</p>
           </div>
         </div>
 
@@ -411,20 +411,35 @@ export default function ConnectPage() {
           </button>
         </div>
 
-        <div className="connect-socials-row" aria-label="Social links">
-          {links.map(({ name, url, icon }) => (
-            <a
-              className="social"
-              href={url}
-              aria-label={name}
-              title={name}
-              key={name || url}
-              {...(url && url.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
-            >
-              <Icon name={icon} size={14} />
-              <span>{name}</span>
-            </a>
-          ))}
+        <div className="connect-socials-grid" aria-label="Social links">
+          {links.filter(({ url }) => url && !url.startsWith('mailto:')).map(({ name, url, icon }) => {
+            const descriptions = {
+              GitHub: 'See my code and open-source work.',
+              LinkedIn: 'Connect about professional opportunities.',
+              Linkedin: 'Connect about professional opportunities.',
+              'X / Twitter': 'Follow along and send a quick note.',
+              Instagram: 'A more casual way to say hello.',
+              Reddit: 'Find me in the community.'
+            };
+            return (
+              <a
+                className="connect-social-card"
+                href={url}
+                aria-label={name}
+                title={name}
+                key={name || url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="connect-social-card-icon"><Icon name={icon} size={16} /></span>
+                <span className="connect-social-card-copy">
+                  <strong>{name}</strong>
+                  <span>{descriptions[name] || 'Connect and follow my updates.'}</span>
+                </span>
+                <span className="connect-social-card-arrow" aria-hidden="true">↗</span>
+              </a>
+            );
+          })}
         </div>
       </section>
     </div>

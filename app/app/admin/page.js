@@ -35,6 +35,9 @@ export default function AdminDashboardPage() {
     headline: '',
     intro: '',
     kaalyugNote: '',
+    resumeRole: '',
+    resumeEducation: '',
+    resumeSkills: '',
     focusTitle: '',
     focusIntro: '',
     careerTitle: '',
@@ -92,6 +95,11 @@ export default function AdminDashboardPage() {
           headline: dataProfile.data.headline || '',
           intro: dataProfile.data.intro || '',
           kaalyugNote: dataProfile.data.kaalyugNote || '',
+          resumeRole: dataProfile.data.resumeRole || '',
+          resumeEducation: dataProfile.data.resumeEducation || '',
+          resumeSkills: Array.isArray(dataProfile.data.resumeSkills)
+            ? dataProfile.data.resumeSkills.join(', ')
+            : dataProfile.data.resumeSkills || '',
           focusTitle: dataProfile.data.focusTitle || '',
           focusIntro: dataProfile.data.focusIntro || '',
           careerTitle: dataProfile.data.careerTitle || '',
@@ -366,7 +374,6 @@ export default function AdminDashboardPage() {
         gap: '16px'
       }}>
         <div>
-          <p className="section-label">Authenticated Session</p>
           <h1 style={{ margin: 0, font: '700 28px Sora, sans-serif', letterSpacing: '-0.04em' }}>
             Control Center ({user})
           </h1>
@@ -440,7 +447,7 @@ export default function AdminDashboardPage() {
       <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--line)', marginBottom: '32px' }}>
         {[
           { id: 'blogs', label: `Blogs (${blogs.length})`, icon: FileText },
-          { id: 'projects', label: `Repos & Demos (${projects.length})`, icon: FolderGit2 },
+          { id: 'projects', label: `Works (${projects.length})`, icon: FolderGit2 },
           { id: 'profile', label: 'About & Profile', icon: UserIcon },
           { id: 'inbox', label: `Inbox (${threads.length})`, icon: Inbox },
           { id: 'info', label: 'Site Links & Info', icon: LinkIcon }
@@ -709,7 +716,7 @@ export default function AdminDashboardPage() {
         <div style={{ border: '1px solid var(--line)', padding: '24px', borderRadius: '8px' }}>
           <h3 style={{ margin: '0 0 8px', font: '800 16px Space Grotesk, sans-serif' }}>About &amp; Profile Manager</h3>
           <p style={{ color: 'var(--muted)', fontSize: '13px', marginBottom: '24px' }}>
-            Customize the editorial copy, focus intro, career statement, and availability displayed on the merged <strong>/about</strong> page.
+            Manage the home and About profile, KAALYUG founder note, and the details shown on the public résumé. The résumé’s selected works and contact links also use the Works and Site Links managers.
           </p>
 
           <form onSubmit={async (e) => {
@@ -727,7 +734,7 @@ export default function AdminDashboardPage() {
             }
           }} style={{ display: 'grid', gap: '18px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Headline</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About headline</label>
               <input
                 type="text"
                 value={profileForm.headline}
@@ -738,7 +745,7 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Introduction (About)</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About introduction</label>
               <textarea
                 rows={3}
                 value={profileForm.intro}
@@ -749,11 +756,44 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>KAALYUG Note</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>KAALYUG Founder Note (Home &amp; About)</label>
               <textarea
                 rows={2}
                 value={profileForm.kaalyugNote}
                 onChange={e => setProfileForm({ ...profileForm, kaalyugNote: e.target.value })}
+                style={{ width: '100%', padding: '10px 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)', fontFamily: 'inherit', resize: 'vertical' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Role / Headline</label>
+              <input
+                type="text"
+                value={profileForm.resumeRole}
+                onChange={e => setProfileForm({ ...profileForm, resumeRole: e.target.value })}
+                placeholder="Software Developer · Founder of KAALYUG"
+                style={{ width: '100%', height: '40px', padding: '0 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Education</label>
+              <input
+                type="text"
+                value={profileForm.resumeEducation}
+                onChange={e => setProfileForm({ ...profileForm, resumeEducation: e.target.value })}
+                placeholder="Bachelor of Information Technology (BIT)"
+                style={{ width: '100%', height: '40px', padding: '0 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Skills (comma-separated)</label>
+              <textarea
+                rows={2}
+                value={profileForm.resumeSkills}
+                onChange={e => setProfileForm({ ...profileForm, resumeSkills: e.target.value })}
+                placeholder="JavaScript, TypeScript, React, Next.js, Git"
                 style={{ width: '100%', padding: '10px 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)', fontFamily: 'inherit', resize: 'vertical' }}
               />
             </div>
