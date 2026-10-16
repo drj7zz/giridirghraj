@@ -1,59 +1,79 @@
-<p align="center">
-  <img src="./assets/readme-banner.svg" alt="DRJ - Frontend Developer" width="100%">
-</p>
+# Dirghraj Giri — Portfolio & Writing
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Frontend_Developer-0B2634?style=for-the-badge&logo=html5&logoColor=83E7F6" alt="Frontend developer">
-  <img src="https://img.shields.io/badge/Nepal-0B2634?style=for-the-badge&logo=googlemaps&logoColor=F5B77C" alt="Nepal">
-  <img src="https://img.shields.io/badge/Open_Source-0B2634?style=for-the-badge&logo=github&logoColor=C7A8FF" alt="Open source">
-  <a href="https://github.com/drj7zz/drj7zz/releases/latest"><img src="https://img.shields.io/github/v/release/drj7zz/drj7zz?color=83E7F6&label=Latest%20Release&style=for-the-badge&logo=git" alt="Latest Release"></a>
-</p>
+A personal portfolio for Dirghraj Giri (DRJ), with an independently deployable
+writing site. The portfolio is the content-management app; the writing site is
+read-only and uses the same MongoDB `blogs` collection.
 
-<p align="center">
-  <a href="https://github.com/drj7zz"><img src="https://img.shields.io/badge/GitHub-DRJ7ZZ-101B24?style=flat-square&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://www.instagram.com/drj1zz"><img src="https://img.shields.io/badge/Instagram-@DRJ1ZZ-101B24?style=flat-square&logo=instagram&logoColor=E1306C" alt="Instagram"></a>
-  <a href="mailto:giridirghraj@gmail.com"><img src="https://img.shields.io/badge/Email-Get_in_touch-101B24?style=flat-square&logo=gmail&logoColor=83E7F6" alt="Email"></a>
-</p>
+**Portfolio:** [Add the deployed portfolio URL]
 
-## Hey, I am DRJ
+**Writing:** [Add the deployed writing-site URL]
 
-I am a frontend developer and open-source contributor from **Madhesh, Nepal**, building high-performance, responsive, and accessible web experiences. I focus on clean visual architecture, resilient frontend engineering, and contributing to the open web ecosystem.
+**Contact:** [Add your preferred contact method]
 
-## 🛠️ Tech Stack & Tools
+## Applications
 
-<table>
-  <tr>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="40" height="40" alt="JavaScript" /><br>
-      <b>JavaScript</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="40" height="40" alt="React" /><br>
-      <b>React</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="40" height="40" alt="HTML5" /><br>
-      <b>HTML5</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="40" height="40" alt="CSS3" /><br>
-      <b>CSS3</b>
-    </td>
-  </tr>
-</table>
+| App | Directory | Purpose |
+| --- | --- | --- |
+| Portfolio | `app/` | Home, Work, About, Connect, résumé, and admin content management |
+| Writing | `blog/` | Standalone journal, research, and blog pages |
 
-## GitHub Live Preview
+The two apps can be deployed separately. Configure their public origins through
+environment variables rather than embedding deployment URLs in the app.
 
-<p align="center">
-  <a href="https://github.com/drj7zz">
-    <img src="https://github-readme-streak-stats.herokuapp.com/?user=drj7zz&theme=tokyonight&hide_border=true" alt="DRJ GitHub activity" style="max-width: 100%;">
-  </a>
-</p>
+## Run locally
 
-<p align="center"><a href="https://github.com/drj7zz?tab=repositories"><b>Explore my live GitHub projects</b></a></p>
+Use a supported Node.js release and install each app's dependencies:
 
-## 📄 License
+```sh
+npm install --prefix app
+npm install --prefix blog
+```
 
-This repository is distributed under the [MIT License](./LICENSE).
+Copy `app/.env.example` to `app/.env.local` and `blog/.env.example` to
+`blog/.env.local`. Set the required values in those local files; do not commit
+credentials or production secrets.
 
-Built with precision by [Dirghraj Giri (DRJ7ZZ)](https://github.com/drj7zz).
+Start the portfolio and writing apps in separate terminals:
+
+```sh
+npm run dev
+npm run dev:blog
+```
+
+By default, the portfolio is available at `http://localhost:3000` and the
+writing site at `http://localhost:3001`.
+
+## Environment configuration
+
+Configure these values in the appropriate app's local environment file or
+deployment settings:
+
+| Variable | App | Purpose |
+| --- | --- | --- |
+| `MONGODB_URI` | Both | MongoDB connection; use the same database for both apps |
+| `NEXT_PUBLIC_BLOG_URL` | Portfolio and writing | Public origin of the independent writing site |
+| `NEXT_PUBLIC_PORTFOLIO_URL` | Writing | Public origin used for links back to the portfolio |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Portfolio | Admin authentication settings |
+
+Use the example files as a guide. Keep secrets private, and use the deployed
+HTTPS origins in production. The portfolio's admin is where writing content is
+managed; the standalone writing app only displays it.
+
+## Build and run for production
+
+From the project root:
+
+```sh
+npm run build
+npm run build:blog
+npm run start
+npm run start:blog
+```
+
+For separate deployments, set the portfolio service's project root to `app` and
+the writing service's project root to `blog`. Configure each service with its
+own environment variables and production start command.
+
+## License
+
+See [LICENSE](./LICENSE) for the project's license.
