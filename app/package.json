@@ -19,6 +19,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
+  "engines": {
+    "node": ">=18.18.0"
+  },
   "description": "DRJ — Developer portfolio built with Next.js 14, a dark studio theme, and live GitHub integration.",
   "author": "DRJ <giridirghraj@gmail.com>",
   "homepage": "https://giridirghraj.vercel.app",

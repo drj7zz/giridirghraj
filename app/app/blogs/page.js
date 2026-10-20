@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import LegacyBlogPage from '../blog/LegacyBlogPage';
 
 export const metadata = {
   title: 'Blog',
@@ -8,6 +7,7 @@ export const metadata = {
 
 export default function BlogsRoute() {
   const blogUrl = process.env.NEXT_PUBLIC_BLOG_URL?.trim().replace(/\/+$/, '');
-  if (blogUrl) redirect(blogUrl);
-  return <LegacyBlogPage />;
+  // The writing app is deployed independently. When its origin is configured we
+  // redirect there; otherwise fall back to the portfolio's own /blog route.
+  redirect(blogUrl || '/blog');
 }

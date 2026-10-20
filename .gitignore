@@ -45,6 +45,9 @@ yarn-error.log*
 .ui-browser/
 ui-check.png
 
+# Vercel
+.vercel
+
 # Environment secrets — blanket protection (any depth)
 **/.env
 **/.env.*

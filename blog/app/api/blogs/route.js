@@ -5,8 +5,16 @@ export const dynamic = 'force-dynamic';
 
 const mongoUri = process.env.MONGODB_URI;
 const clientOptions = {
+  // Bounded timeouts so a cold serverless invocation fails fast and can fall
+  // back to the bundled posts instead of hanging until the function times out.
   serverSelectionTimeoutMS: 5000,
-  connectTimeoutMS: 10000
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+  // Small pool: serverless scales by adding instances, not bigger pools.
+  maxPoolSize: 10,
+  minPoolSize: 0,
+  maxIdleTimeMS: 60000,
+  retryWrites: true
 };
 
 const fallbackPosts = [
@@ -40,9 +48,15 @@ async function getBlogsCollection() {
     throw new Error('MONGODB_URI is not configured.');
   }
 
+  // Cached on globalThis so warm serverless instances reuse one pooled client
+  // instead of opening a fresh connection on every request.
   if (!globalThis.blogMongoClientPromise) {
     const client = new MongoClient(mongoUri, clientOptions);
-    globalThis.blogMongoClientPromise = client.connect().catch((error) => {
+    const promise = client.connect();
+    // Swallow the rejection here so it never becomes an unhandled rejection;
+    // the awaiting caller below still receives the error.
+    promise.catch(() => {});
+    globalThis.blogMongoClientPromise = promise.catch((error) => {
       globalThis.blogMongoClientPromise = undefined;
       throw error;
     });

@@ -1,59 +1,130 @@
-<p align="center">
-  <img src="./assets/readme-banner.svg" alt="DRJ - Frontend Developer" width="100%">
-</p>
+# Dirghraj Giri — Portfolio & Writing
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Frontend_Developer-0B2634?style=for-the-badge&logo=html5&logoColor=83E7F6" alt="Frontend developer">
-  <img src="https://img.shields.io/badge/Nepal-0B2634?style=for-the-badge&logo=googlemaps&logoColor=F5B77C" alt="Nepal">
-  <img src="https://img.shields.io/badge/Open_Source-0B2634?style=for-the-badge&logo=github&logoColor=C7A8FF" alt="Open source">
-  <a href="https://github.com/drj7zz/drj7zz/releases/latest"><img src="https://img.shields.io/github/v/release/drj7zz/drj7zz?color=83E7F6&label=Latest%20Release&style=for-the-badge&logo=git" alt="Latest Release"></a>
-</p>
+A personal portfolio for Dirghraj Giri (DRJ), with an independently deployable
+writing site. The portfolio is the content-management app; the writing site is
+read-only and uses the same MongoDB `blogs` collection.
 
-<p align="center">
-  <a href="https://github.com/drj7zz"><img src="https://img.shields.io/badge/GitHub-DRJ7ZZ-101B24?style=flat-square&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://www.instagram.com/drj1zz"><img src="https://img.shields.io/badge/Instagram-@DRJ1ZZ-101B24?style=flat-square&logo=instagram&logoColor=E1306C" alt="Instagram"></a>
-  <a href="mailto:giridirghraj@gmail.com"><img src="https://img.shields.io/badge/Email-Get_in_touch-101B24?style=flat-square&logo=gmail&logoColor=83E7F6" alt="Email"></a>
-</p>
+**Portfolio:** <https://giridirghraj.vercel.app>
 
-## Hey, I am DRJ
+**Writing:** Set `NEXT_PUBLIC_BLOG_URL` to the writing site's deployed URL.
 
-I am a frontend developer and open-source contributor from **Madhesh, Nepal**, building high-performance, responsive, and accessible web experiences. I focus on clean visual architecture, resilient frontend engineering, and contributing to the open web ecosystem.
+**Contact:** [giridirghraj@gmail.com](mailto:giridirghraj@gmail.com)
 
-## 🛠️ Tech Stack & Tools
+## Applications
 
-<table>
-  <tr>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="40" height="40" alt="JavaScript" /><br>
-      <b>JavaScript</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="40" height="40" alt="React" /><br>
-      <b>React</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="40" height="40" alt="HTML5" /><br>
-      <b>HTML5</b>
-    </td>
-    <td align="center" width="25%">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="40" height="40" alt="CSS3" /><br>
-      <b>CSS3</b>
-    </td>
-  </tr>
-</table>
+| App | Directory | Purpose |
+| --- | --- | --- |
+| Portfolio | `app/` | Home, Work, About, Connect, résumé, and admin content management |
+| Writing | `blog/` | Standalone journal, research, and blog pages |
 
-## GitHub Live Preview
+The two apps can be deployed separately. Configure their public origins through
+environment variables rather than embedding deployment URLs in the app.
 
-<p align="center">
-  <a href="https://github.com/drj7zz">
-    <img src="https://github-readme-streak-stats.herokuapp.com/?user=drj7zz&theme=tokyonight&hide_border=true" alt="DRJ GitHub activity" style="max-width: 100%;">
-  </a>
-</p>
+## Run locally
 
-<p align="center"><a href="https://github.com/drj7zz?tab=repositories"><b>Explore my live GitHub projects</b></a></p>
+Use a supported Node.js release and install each app's dependencies:
 
-## 📄 License
+```sh
+npm install --prefix app
+npm install --prefix blog
+```
 
-This repository is distributed under the [MIT License](./LICENSE).
+Copy `app/.env.example` to `app/.env.local` and `blog/.env.example` to
+`blog/.env.local`. Set the required values in those local files; do not commit
+credentials or production secrets.
 
-Built with precision by [Dirghraj Giri (DRJ7ZZ)](https://github.com/drj7zz).
+Start the portfolio and writing apps in separate terminals:
+
+```sh
+npm run dev
+npm run dev:blog
+```
+
+By default, the portfolio is available at `http://localhost:3000` and the
+writing site at `http://localhost:3001`.
+
+## Environment configuration
+
+Configure these values in the appropriate app's local environment file or
+deployment settings:
+
+| Variable | App | Purpose |
+| --- | --- | --- |
+| `MONGODB_URI` | Both | MongoDB connection; use the same database for both apps |
+| `NEXT_PUBLIC_BLOG_URL` | Portfolio and writing | Public origin of the independent writing site |
+| `NEXT_PUBLIC_PORTFOLIO_URL` | Writing | Public origin used for links back to the portfolio |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Portfolio | Admin authentication settings |
+
+Use the example files as a guide. Keep secrets private, and use the deployed
+HTTPS origins in production. The portfolio's admin is where writing content is
+managed; the standalone writing app only displays it.
+
+## Build and run for production
+
+From the project root:
+
+```sh
+npm run build
+npm run build:blog
+npm run start
+npm run start:blog
+```
+
+## Deploy to Vercel
+
+The two apps deploy as **two separate Vercel projects** from the same repository.
+Each app already contains its own `vercel.json` (framework, region, cache headers)
+and `.vercelignore`, so the only thing left to configure is the project root and
+environment variables.
+
+### 1. Create the projects
+
+| Vercel project | Root Directory | Framework |
+| --- | --- | --- |
+| Portfolio | `app` | Next.js |
+| Writing | `blog` | Next.js |
+
+When importing the repo, set **Root Directory** to `app` for the first project and
+to `blog` for the second. Vercel detects Next.js automatically; leave the build
+and output settings at their defaults (`next build`).
+
+### 2. Set environment variables
+
+Add these under **Project Settings → Environment Variables** for the matching
+project. Use the deployed HTTPS origins — not `localhost`.
+
+| Variable | Project | Notes |
+| --- | --- | --- |
+| `MONGODB_URI` | Both | Same database for both apps; allow Vercel egress IPs in Atlas |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Portfolio | Required for admin/CMS and chat auth |
+| `GITHUB_TOKEN` | Portfolio | Optional; raises the GitHub API rate limit |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Portfolio | Optional Google sign-in |
+| `NEXT_PUBLIC_BLOG_URL` | Portfolio | `https://<your-blog>.vercel.app` |
+| `NEXT_PUBLIC_PORTFOLIO_URL` | Writing | `https://<your-portfolio>.vercel.app` |
+| `NEXT_PUBLIC_BLOG_URL` | Writing | `https://<your-blog>.vercel.app` |
+
+`NEXT_PUBLIC_*` values are inlined at build time — redeploy after changing them.
+
+### 3. Finish external setup
+
+- **MongoDB Atlas:** add `0.0.0.0/0` (or Vercel's egress ranges) to the Network
+  Access allowlist. Serverless functions cannot use static IPs on the free plan.
+- **Google OAuth:** register the production callback
+  `https://<your-portfolio>.vercel.app/api/user/auth/google/callback` in the
+  Google Cloud Console and set the matching `GOOGLE_REDIRECT_URI`.
+
+If `MONGODB_URI` is missing or Atlas is unreachable, both apps fall back to the
+bundled seed data instead of erroring — so the first deploy renders even before
+the database is wired up.
+
+## Deployment notes
+
+- Both apps run on the Node.js runtime. The portfolio targets Node 18.18+ and the
+  writing app targets Node 20.9+ (declared via the `engines` field).
+- MongoDB connections are cached on `globalThis` so a warm serverless instance
+  reuses one pooled client instead of opening a connection per request.
+- The portfolio's `render.yaml` remains for other hosts; it is ignored by Vercel.
+
+## License
+
+See [LICENSE](./LICENSE) for the project's license.
