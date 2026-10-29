@@ -6,7 +6,7 @@ import { blogPosts as seedBlogs } from '../../../../lib/data';
 import { ObjectId } from 'mongodb';
 
 export async function GET(request, { params }) {
-  const { id } = params;
+  const { id } = await params;
   try {
     const db = await getDatabase();
     if (!db) {
@@ -39,7 +39,7 @@ export async function PUT(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const db = await getDatabase();
     if (!db) {
@@ -72,7 +72,7 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const db = await getDatabase();
     if (!db) {
       return NextResponse.json({ error: 'MongoDB Atlas is not configured.' }, { status: 503 });

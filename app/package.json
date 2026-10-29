@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -15,14 +14,14 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.439.0",
     "mongodb": "^7.6.0",
-    "next": "^14.2.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": "24.x"
   },
-  "description": "DRJ — Developer portfolio built with Next.js 14, a dark studio theme, and live GitHub integration.",
+  "description": "DRJ — Developer portfolio and writing site built with Next.js 16.",
   "author": "DRJ <giridirghraj@gmail.com>",
   "homepage": "https://giridirghraj.vercel.app",
   "repository": {

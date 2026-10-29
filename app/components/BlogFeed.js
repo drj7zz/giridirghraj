@@ -24,14 +24,14 @@ function MarkdownContent({ post }) {
   const blocks = String(post.content || '').split(/(```[\s\S]*?```)/g);
 
   return (
-    <div className="article-content">
+    <div className="writing-article-content">
       {blocks.map((block, blockIndex) => {
         if (block.startsWith('```')) {
           const match = block.match(/^```([^\r\n`]*)\r?\n([\s\S]*?)```$/);
           if (!match) return <p key={blockIndex}>{block}</p>;
           return (
-            <div className="code-example" key={blockIndex}>
-              <div className="code-label">{match[1].trim() || 'code'}</div>
+            <div className="writing-code-example" key={blockIndex}>
+              <div className="writing-code-label">{match[1].trim() || 'code'}</div>
               <pre><code>{match[2].replace(/\r?\n$/, '')}</code></pre>
             </div>
           );
@@ -134,17 +134,17 @@ export default function BlogFeed() {
   }, [posts, query, selectedTag, category]);
 
   return (
-    <section className="writing-section" id="writing" aria-labelledby="writing-title">
-      <div className="section-heading">
+    <section className="writing-writing-section" id="writing" aria-labelledby="writing-title">
+      <div className="writing-section-heading">
         <div>
-          <p className="eyebrow">THE JOURNAL</p>
+          <p className="writing-eyebrow">THE JOURNAL</p>
           <h2 id="writing-title">{category === 'research' ? 'Research' : 'Writing'} <span>archive</span></h2>
         </div>
-        <p className="section-note">{posts.length} {posts.length === 1 ? 'note' : 'notes'} · updated as I learn</p>
+        <p className="writing-section-note">{posts.length} {posts.length === 1 ? 'note' : 'notes'} · updated as I learn</p>
       </div>
 
-      <div className="filter-panel">
-        <label className="search-box">
+      <div className="writing-filter-panel">
+        <label className="writing-search-box">
           <span aria-hidden="true">⌕</span>
           <input
             value={query}
@@ -154,12 +154,12 @@ export default function BlogFeed() {
             aria-label="Search writing"
           />
         </label>
-        <div className="tag-list" aria-label="Filter by topic">
+        <div className="writing-tag-list" aria-label="Filter by topic">
           {tags.map((tag) => (
             <button
               type="button"
               key={tag}
-              className={`tag-filter${selectedTag === tag ? ' is-active' : ''}`}
+              className={`writing-tag-filter${selectedTag === tag ? ' writing-is-active' : ''}`}
               aria-pressed={selectedTag === tag}
               onClick={() => setSelectedTag(tag)}
             >
@@ -169,38 +169,38 @@ export default function BlogFeed() {
         </div>
       </div>
 
-      {loading && <p className="feed-message" role="status">Loading the latest writing…</p>}
-      {!loading && error && <p className="feed-message feed-error" role="alert">{error}</p>}
+      {loading && <p className="writing-feed-message" role="status">Loading the latest writing…</p>}
+      {!loading && error && <p className="writing-feed-message writing-feed-error" role="alert">{error}</p>}
       {!loading && !error && filteredPosts.length === 0 && (
-        <p className="feed-message">
+        <p className="writing-feed-message">
           {category === 'research'
             ? 'No research notes have been published yet.'
             : posts.length ? 'No notes match those filters.' : 'No writing has been published yet.'}
         </p>
       )}
 
-      <div className="article-list">
+      <div className="writing-article-list">
         {filteredPosts.map((post, index) => {
           const isExpanded = expandedId === post.id;
           return (
-            <article className={`article-card${isExpanded ? ' is-expanded' : ''}`} id={post.id} key={post.id}>
-              <span className="article-number">{String(index + 1).padStart(2, '0')}</span>
-              <div className="article-main">
-                <div className="article-meta">
+            <article className={`writing-article-card${isExpanded ? ' writing-is-expanded' : ''}`} id={post.id} key={post.id}>
+              <span className="writing-article-number">{String(index + 1).padStart(2, '0')}</span>
+              <div className="writing-article-main">
+                <div className="writing-article-meta">
                   <time dateTime={post.date || undefined}>{formatDate(post.date)}</time>
                   {post.readTime && <span>{post.readTime}</span>}
                 </div>
                 <button
                   type="button"
-                  className="article-title-button"
+                  className="writing-article-title-button"
                   aria-expanded={isExpanded}
                   onClick={() => setExpandedId(isExpanded ? '' : post.id)}
                 >
                   <h3>{post.title}</h3>
-                  <span className="article-toggle" aria-hidden="true">{isExpanded ? '−' : '+'}</span>
+                  <span className="writing-article-toggle" aria-hidden="true">{isExpanded ? '−' : '+'}</span>
                 </button>
-                {post.excerpt && <p className="article-excerpt">{post.excerpt}</p>}
-                <div className="article-tags">
+                {post.excerpt && <p className="writing-article-excerpt">{post.excerpt}</p>}
+                <div className="writing-article-tags">
                   {tagsFor(post).map((tag) => <span key={tag}>{tag}</span>)}
                 </div>
                 {isExpanded && <MarkdownContent post={post} />}

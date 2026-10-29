@@ -2,14 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  experimental: {
-    serverComponentsExternalPackages: ['mongodb', 'bcryptjs']
-  },
+  serverExternalPackages: ['mongodb', 'bcryptjs'],
   images: {
     unoptimized: true
   },
   async headers() {
     return [
+      {
+        source: '/api/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store, max-age=0' }]
+      },
       {
         source: '/(.*)',
         headers: [

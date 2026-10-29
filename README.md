@@ -1,129 +1,58 @@
 # Dirghraj Giri — Portfolio & Writing
 
-A personal portfolio for Dirghraj Giri (DRJ), with an independently deployable
-writing site. The portfolio is the content-management app; the writing site is
-read-only and uses the same MongoDB `blogs` collection.
+The portfolio, journal, research notes, and admin content manager are one Next.js
+application. The public writing pages and the admin CMS use the same `/api/blogs`
+endpoint and MongoDB `blogs` collection.
 
-**Portfolio:** <https://giridirghraj.vercel.app>
-
-**Writing:** Set `NEXT_PUBLIC_BLOG_URL` to the writing site's deployed URL.
+**Site:** <https://giridirghraj.vercel.app>
 
 **Contact:** [giridirghraj@gmail.com](mailto:giridirghraj@gmail.com)
 
-## Applications
+## Local development
 
-| App | Directory | Purpose |
-| --- | --- | --- |
-| Portfolio | `app/` | Home, Work, About, Connect, résumé, and admin content management |
-| Writing | `blog/` | Standalone journal, research, and blog pages |
+Use Node.js 24.x (the latest major currently supported by Vercel). Install and
+start the single app from the repository root:
 
-The two apps can be deployed separately. Configure their public origins through
-environment variables rather than embedding deployment URLs in the app.
-
-## Run locally
-
-Use a supported Node.js release and install each app's dependencies:
-
-```sh
+```powershell
 npm install --prefix app
-npm install --prefix blog
-```
-
-Copy `app/.env.example` to `app/.env.local` and `blog/.env.example` to
-`blog/.env.local`. Set the required values in those local files; do not commit
-credentials or production secrets.
-
-Start the portfolio and writing apps in separate terminals:
-
-```sh
+Copy-Item app/.env.example app/.env.local
 npm run dev
-npm run dev:blog
 ```
 
-By default, the portfolio is available at `http://localhost:3000` and the
-writing site at `http://localhost:3001`.
+The site runs at `http://localhost:3000`; the journal is at `/blogs`. Set real
+local values in `app/.env.local` and keep secrets out of Git.
 
-## Environment configuration
+## Environment variables
 
-Configure these values in the appropriate app's local environment file or
-deployment settings:
+| Variable | Purpose |
+| --- | --- |
+| `MONGODB_URI` | MongoDB database for projects, site data, and blog content |
+| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Admin CMS and chat authentication |
+| `GITHUB_TOKEN` | Optional GitHub API rate-limit increase |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Optional Google sign-in; callback path is `/api/user/auth/google/callback` |
 
-| Variable | App | Purpose |
-| --- | --- | --- |
-| `MONGODB_URI` | Both | MongoDB connection; use the same database for both apps |
-| `NEXT_PUBLIC_BLOG_URL` | Portfolio and writing | Public origin of the independent writing site |
-| `NEXT_PUBLIC_PORTFOLIO_URL` | Writing | Public origin used for links back to the portfolio |
-| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Portfolio | Admin authentication settings |
+If MongoDB is not configured or unavailable, the APIs use the bundled seed data
+where available. Configure production secrets in the Vercel project settings,
+not in committed files.
 
-Use the example files as a guide. Keep secrets private, and use the deployed
-HTTPS origins in production. The portfolio's admin is where writing content is
-managed; the standalone writing app only displays it.
-
-## Build and run for production
-
-From the project root:
+## Build
 
 ```sh
 npm run build
-npm run build:blog
 npm run start
-npm run start:blog
 ```
 
 ## Deploy to Vercel
 
-The two apps deploy as **two separate Vercel projects** from the same repository.
-Each app already contains its own `vercel.json` (framework, region, cache headers)
-and `.vercelignore`, so the only thing left to configure is the project root and
-environment variables.
+Deploy one Vercel project from this repository and set its **Root Directory** to
+`app`. Vercel detects Next.js and uses the app's lockfile and `npm run build`.
+Use Node.js **24.x**, the newest major currently offered by Vercel. Security
+headers are configured in `app/next.config.mjs`; a separate Vercel config file
+is not required.
 
-### 1. Create the projects
-
-| Vercel project | Root Directory | Framework |
-| --- | --- | --- |
-| Portfolio | `app` | Next.js |
-| Writing | `blog` | Next.js |
-
-When importing the repo, set **Root Directory** to `app` for the first project and
-to `blog` for the second. Vercel detects Next.js automatically; leave the build
-and output settings at their defaults (`next build`).
-
-### 2. Set environment variables
-
-Add these under **Project Settings → Environment Variables** for the matching
-project. Use the deployed HTTPS origins — not `localhost`.
-
-| Variable | Project | Notes |
-| --- | --- | --- |
-| `MONGODB_URI` | Both | Same database for both apps; allow Vercel egress IPs in Atlas |
-| `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `JWT_SECRET` | Portfolio | Required for admin/CMS and chat auth |
-| `GITHUB_TOKEN` | Portfolio | Optional; raises the GitHub API rate limit |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Portfolio | Optional Google sign-in |
-| `NEXT_PUBLIC_BLOG_URL` | Portfolio | `https://<your-blog>.vercel.app` |
-| `NEXT_PUBLIC_PORTFOLIO_URL` | Writing | `https://<your-portfolio>.vercel.app` |
-| `NEXT_PUBLIC_BLOG_URL` | Writing | `https://<your-blog>.vercel.app` |
-
-`NEXT_PUBLIC_*` values are inlined at build time — redeploy after changing them.
-
-### 3. Finish external setup
-
-- **MongoDB Atlas:** add `0.0.0.0/0` (or Vercel's egress ranges) to the Network
-  Access allowlist. Serverless functions cannot use static IPs on the free plan.
-- **Google OAuth:** register the production callback
-  `https://<your-portfolio>.vercel.app/api/user/auth/google/callback` in the
-  Google Cloud Console and set the matching `GOOGLE_REDIRECT_URI`.
-
-If `MONGODB_URI` is missing or Atlas is unreachable, both apps fall back to the
-bundled seed data instead of erroring — so the first deploy renders even before
-the database is wired up.
-
-## Deployment notes
-
-- Both apps run on the Node.js runtime. The portfolio targets Node 18.18+ and the
-  writing app targets Node 20.9+ (declared via the `engines` field).
-- MongoDB connections are cached on `globalThis` so a warm serverless instance
-  reuses one pooled client instead of opening a connection per request.
-- The portfolio's `render.yaml` remains for other hosts; it is ignored by Vercel.
+Configure the environment variables above in Vercel. For Google sign-in, register
+the production callback URL in Google Cloud Console and set the matching
+`GOOGLE_REDIRECT_URI`. MongoDB Atlas must allow connections from your deployment.
 
 ## License
 

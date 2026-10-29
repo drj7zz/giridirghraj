@@ -1,16 +1,11 @@
 # Next.js build output
-app/.next/
+.next/
 app/out/
 app/build/
 app/dist/
-blog/.next/
-blog/out/
-blog/build/
-blog/dist/
 
 # Dependencies
 app/node_modules/
-blog/node_modules/
 node_modules/
 /.pnp
 .pnp.js
