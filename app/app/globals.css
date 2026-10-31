@@ -11,6 +11,7 @@
   --muted: #95999d;
   --line: #282c30;
   --accent: #c9f36a;
+  --accent-soft: #e4f6c2;
   --glow: #91bd46;
   --text-soft: #c4c7c5;
   --nav-bg: rgba(11, 13, 16, 0.88);
@@ -1732,20 +1733,20 @@ main { flex: 1; }
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-soft);
+  color: #11150a;
   font: 800 13px 'Space Grotesk', sans-serif;
 }
 
 .chat-head-title { display: inline-flex; align-items: center; gap: 10px; }
 
-.chat-status { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: rgba(255,255,255,.75); font: 600 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .04em; }
+.chat-status { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: rgba(17,21,10,.72); font: 600 10px 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .04em; }
 
-.chat-status span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.55); }
+.chat-status span { width: 6px; height: 6px; border-radius: 50%; background: rgba(17,21,10,.55); }
 
 .chat-status.online span { background: #9be9a8; box-shadow: 0 0 0 3px rgba(155,233,168,.16); }
 
-.chat-head button { color: #fff; margin-left: 12px; font: 800 10px 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
+.chat-head button { color: #11150a; margin-left: 12px; font: 800 10px 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
 
 .chat-head button:hover { opacity: 1; text-decoration: underline; }
 
@@ -1770,8 +1771,8 @@ main { flex: 1; }
 
 .chat-bubble.me {
   align-self: flex-end;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-soft);
+  color: #11150a;
   border-bottom-right-radius: 6px;
 }
 
@@ -1832,8 +1833,8 @@ main { flex: 1; }
   min-width: 76px;
   padding: 0 16px;
   border-radius: 20px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-soft);
+  color: #11150a;
   font: 800 11px 'Space Grotesk', sans-serif;
   display: inline-flex;
   align-items: center;
@@ -1841,7 +1842,7 @@ main { flex: 1; }
   gap: 6px;
 }
 
-.chat-form button:disabled { opacity: 0.5; cursor: default; }
+.chat-form button:disabled { background: var(--line); color: var(--muted); cursor: default; }
 
 .chat-form-meta { display: flex; justify-content: space-between; gap: 10px; padding: 0 16px 10px; color: var(--muted); font: 10px 'DM Mono', monospace; }
 
@@ -1896,7 +1897,7 @@ main { flex: 1; }
 
 .chat-auth-choice button { flex: 1; padding: 8px 10px; border-radius: 5px; color: var(--muted); font: 700 11px 'Space Grotesk', sans-serif; }
 
-.chat-auth-choice button.active { background: var(--accent); color: #fff; }
+.chat-auth-choice button.active { background: var(--accent-soft); color: #11150a; }
 
 .chat-google-choice { display: grid; gap: 12px; padding: 4px 0; }
 
@@ -3200,7 +3201,7 @@ body { background: var(--bg); color: var(--ink); }
 .connect-wrapper .chat-auth { padding: 24px; }
 .connect-wrapper .chat-auth input[type="text"],
 .connect-wrapper .chat-auth input[type="password"] { min-height: 44px; padding: 0 12px; }
-.connect-wrapper .chat-auth-choice button.active { background: var(--accent); color: #11150a; }
+.connect-wrapper .chat-auth-choice button.active { background: var(--accent-soft); color: #11150a; }
 .connect-wrapper .chat-hint { line-height: 1.7; }
 .connect-wrapper .chat-auth .button { min-height: 44px; }
 .connect-wrapper .chat-panel-closed { min-height: 200px; padding: 24px; }
@@ -3367,7 +3368,7 @@ body { background: var(--bg); color: var(--ink); }
 .skip-link:focus { transform: translateY(0); }
 
 .hero-art {
-  border-radius: 12px;
+  border-radius: 50%;
   box-shadow: 12px 12px 0 rgba(201, 243, 106, 0.12), 0 30px 90px rgba(0, 0, 0, 0.32);
   transform: none;
   transform-style: flat;
@@ -3381,7 +3382,7 @@ body { background: var(--bg); color: var(--ink); }
 .hero-art-image {
   inset: 5%;
   border: 1px solid rgba(244, 243, 237, 0.14);
-  border-radius: 6px;
+  border-radius: 50%;
   transform: none;
   transform-style: flat;
 }
@@ -3443,7 +3444,7 @@ body { background: var(--bg); color: var(--ink); }
 
   .nav-links {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     flex: 1 1 100%;
     gap: 4px;
     overflow: visible;

@@ -2,10 +2,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, User, BookOpen, Mail, FileText, ArrowUpRight } from 'lucide-react';
+import { House, Briefcase, User, BookOpen, Mail, FileText, ArrowUpRight } from 'lucide-react';
 import { BLOG_URL } from '../lib/site-links';
 
 const NAV_ITEMS = [
+  { href: '/', label: 'Home', Icon: House },
   { href: '/projects', label: 'Works', Icon: Briefcase },
   { href: '/about', label: 'About', Icon: User },
   { href: BLOG_URL, label: 'Blog', Icon: BookOpen },
