@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { Bookmark, Share2 } from 'lucide-react';
+import { getBlogPostUrl } from '../lib/site-links';
 
 function tagsFor(post) {
   if (Array.isArray(post.tags)) return post.tags.filter(Boolean);
@@ -76,6 +78,9 @@ export default function BlogFeed() {
   const [expandedId, setExpandedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [savedIds, setSavedIds] = useState(() => new Set());
+  const [savingIds, setSavingIds] = useState(() => new Set());
+  const [actionMessages, setActionMessages] = useState({});
 
   useEffect(() => {
     const requestedCategory = new URLSearchParams(window.location.search).get('category');
@@ -101,6 +106,27 @@ export default function BlogFeed() {
     }
 
     loadPosts();
+    return () => { isCurrent = false; };
+  }, []);
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    async function loadSavedPosts() {
+      try {
+        const response = await fetch('/api/user/saved');
+        if (response.status === 401) return;
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Unable to load saved notes.');
+        if (isCurrent && Array.isArray(result.items)) {
+          setSavedIds(new Set(result.items.map((item) => item.id)));
+        }
+      } catch (loadError) {
+        console.error('Unable to load saved writing.', loadError);
+      }
+    }
+
+    loadSavedPosts();
     return () => { isCurrent = false; };
   }, []);
 
@@ -132,6 +158,88 @@ export default function BlogFeed() {
         && (selectedTag === 'All' || postTags.includes(selectedTag));
     });
   }, [posts, query, selectedTag, category]);
+
+  async function toggleSaved(post) {
+    if (savingIds.has(post.id)) return;
+    setSavingIds((current) => new Set(current).add(post.id));
+    setActionMessages((current) => ({ ...current, [post.id]: '' }));
+
+    try {
+      const isSaved = savedIds.has(post.id);
+      const response = await fetch(
+        isSaved ? `/api/user/saved?id=${encodeURIComponent(post.id)}` : '/api/user/saved',
+        isSaved
+          ? { method: 'DELETE' }
+          : {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: post.id,
+                type: 'blog',
+                title: post.title,
+                url: getBlogPostUrl(post.id)
+              })
+            }
+      );
+
+      if (response.status === 401) {
+        window.location.assign('/login');
+        return;
+      }
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Unable to update saved notes.');
+
+      setSavedIds((current) => {
+        const next = new Set(current);
+        if (isSaved) next.delete(post.id);
+        else next.add(post.id);
+        return next;
+      });
+      setActionMessages((current) => ({
+        ...current,
+        [post.id]: isSaved ? 'Removed from saved notes.' : 'Saved to your notes.'
+      }));
+    } catch (saveError) {
+      console.error('Unable to update saved writing.', saveError);
+      setActionMessages((current) => ({
+        ...current,
+        [post.id]: saveError.message || 'Unable to update saved notes.'
+      }));
+    } finally {
+      setSavingIds((current) => {
+        const next = new Set(current);
+        next.delete(post.id);
+        return next;
+      });
+    }
+  }
+
+  async function sharePost(post) {
+    const url = new URL(getBlogPostUrl(post.id), window.location.origin).toString();
+    setActionMessages((current) => ({ ...current, [post.id]: '' }));
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: post.title, text: post.excerpt || post.title, url });
+        setActionMessages((current) => ({ ...current, [post.id]: 'Link shared.' }));
+        return;
+      }
+
+      if (!navigator.clipboard?.writeText) {
+        throw new Error('Sharing is not supported by this browser.');
+      }
+      await navigator.clipboard.writeText(url);
+      setActionMessages((current) => ({ ...current, [post.id]: 'Link copied to clipboard.' }));
+    } catch (shareError) {
+      if (shareError.name === 'AbortError') return;
+      console.error('Unable to share writing.', shareError);
+      setActionMessages((current) => ({
+        ...current,
+        [post.id]: shareError.message || 'Unable to share this note.'
+      }));
+    }
+  }
 
   return (
     <section className="writing-writing-section" id="writing" aria-labelledby="writing-title">
@@ -189,6 +297,33 @@ export default function BlogFeed() {
                 <div className="writing-article-meta">
                   <time dateTime={post.date || undefined}>{formatDate(post.date)}</time>
                   {post.readTime && <span>{post.readTime}</span>}
+                </div>
+                <div className="writing-article-actions">
+                  <button
+                    type="button"
+                    className={`writing-article-action${savedIds.has(post.id) ? ' writing-is-saved' : ''}`}
+                    aria-label={savedIds.has(post.id) ? `Remove ${post.title} from saved notes` : `Save ${post.title}`}
+                    aria-pressed={savedIds.has(post.id)}
+                    disabled={savingIds.has(post.id)}
+                    onClick={() => toggleSaved(post)}
+                  >
+                    <Bookmark size={14} fill={savedIds.has(post.id) ? 'currentColor' : 'none'} />
+                    {savingIds.has(post.id) ? 'Saving…' : savedIds.has(post.id) ? 'Saved' : 'Save'}
+                  </button>
+                  <button
+                    type="button"
+                    className="writing-article-action"
+                    aria-label={`Share ${post.title}`}
+                    onClick={() => sharePost(post)}
+                  >
+                    <Share2 size={14} />
+                    Share
+                  </button>
+                  {actionMessages[post.id] && (
+                    <span className="writing-article-action-message" role="status">
+                      {actionMessages[post.id]}
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"
