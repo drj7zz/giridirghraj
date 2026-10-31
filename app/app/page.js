@@ -164,10 +164,10 @@ export default function DashboardPage() {
             ) : (
               <img
                 ref={imgRef}
-                src="/assets/images/profile-cutout.png"
+                src="/assets/images/profile.png"
                 alt="Dirghraj Giri"
-                width={486}
-                height={780}
+                width={1086}
+                height={1086}
                 onError={() => setProfileImgError(true)}
               />
             )}

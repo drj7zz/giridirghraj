@@ -351,7 +351,10 @@ function UserLoginPageContent() {
               </div>
 
               <form className="chat-form" onSubmit={handleSendChat}>
+                <label className="visually-hidden" htmlFor="account-chat-message">Message</label>
                 <input
+                  id="account-chat-message"
+                  name="message"
                   type="text"
                   placeholder="Type a message to DRJ…"
                   value={chatDraft}
@@ -558,15 +561,17 @@ function UserLoginPageContent() {
 
       <form onSubmit={handleAuth} style={{ display: 'grid', gap: '16px' }}>
         <div>
-          <label style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label htmlFor="account-username" style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Username
           </label>
           <div style={{ position: 'relative' }}>
             <input
+              id="account-username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. dev_user (3–20 letters/digits)"
+              placeholder="Username"
               required
               autoComplete="username"
               style={{
@@ -587,15 +592,17 @@ function UserLoginPageContent() {
         </div>
 
         <div>
-          <label style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label htmlFor="account-password" style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Password
           </label>
           <div style={{ position: 'relative' }}>
             <input
+              id="account-password"
+              name="password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min 6 characters"
+              placeholder="Password"
               required
               autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
               style={{
@@ -629,6 +636,8 @@ function UserLoginPageContent() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--muted)', fontSize: '12px', cursor: 'pointer' }}>
             <input
+              id="remember-account"
+              name="remember"
               type="checkbox"
               checked={remember}
               onChange={(e) => setRemember(e.target.checked)}

@@ -84,15 +84,18 @@ export default function AdminLoginPage() {
 
       <form onSubmit={handleLogin} style={{ display: 'grid', gap: '16px' }}>
         <div>
-          <label style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label htmlFor="admin-username" style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Username
           </label>
           <div style={{ position: 'relative' }}>
             <input
+              id="admin-username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. giridirghraj"
+              placeholder="Username"
+              autoComplete="username"
               required
               style={{
                 width: '100%',
@@ -112,15 +115,18 @@ export default function AdminLoginPage() {
         </div>
 
         <div>
-          <label style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label htmlFor="admin-password" style={{ display: 'block', marginBottom: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Password
           </label>
           <div style={{ position: 'relative' }}>
             <input
+              id="admin-password"
+              name="password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Password"
+              autoComplete="current-password"
               required
               style={{
                 width: '100%',
@@ -152,6 +158,8 @@ export default function AdminLoginPage() {
 
         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--muted)', fontSize: '12px', cursor: 'pointer' }}>
           <input
+            id="remember-admin-username"
+            name="rememberUsername"
             type="checkbox"
             checked={rememberUsername}
             onChange={(e) => setRememberUsername(e.target.checked)}

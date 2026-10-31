@@ -489,8 +489,10 @@ export default function AdminDashboardPage() {
             <form onSubmit={handleSaveBlog} style={{ display: 'grid', gap: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '16px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Title</label>
+                  <label htmlFor="blog-title" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Title</label>
                   <input
+                    id="blog-title"
+                    name="title"
                     type="text"
                     value={blogForm.title}
                     onChange={e => setBlogForm({ ...blogForm, title: e.target.value })}
@@ -501,8 +503,10 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Read Time</label>
+                  <label htmlFor="blog-read-time" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Read Time</label>
                   <input
+                    id="blog-read-time"
+                    name="readTime"
                     type="text"
                     value={blogForm.readTime}
                     onChange={e => setBlogForm({ ...blogForm, readTime: e.target.value })}
@@ -513,8 +517,10 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Tags (comma-separated)</label>
+                <label htmlFor="blog-tags" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Tags (comma-separated)</label>
                 <input
+                  id="blog-tags"
+                  name="tags"
                   type="text"
                   value={blogForm.tags}
                   onChange={e => setBlogForm({ ...blogForm, tags: e.target.value })}
@@ -524,8 +530,10 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Excerpt (short summary)</label>
+                <label htmlFor="blog-excerpt" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Excerpt (short summary)</label>
                 <textarea
+                  id="blog-excerpt"
+                  name="excerpt"
                   rows={2}
                   value={blogForm.excerpt}
                   onChange={e => setBlogForm({ ...blogForm, excerpt: e.target.value })}
@@ -535,8 +543,10 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Content (Markdown & Code supported)</label>
+                <label htmlFor="blog-content" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Content (Markdown & Code supported)</label>
                 <textarea
+                  id="blog-content"
+                  name="content"
                   rows={9}
                   value={blogForm.content}
                   onChange={e => setBlogForm({ ...blogForm, content: e.target.value })}
@@ -600,8 +610,10 @@ export default function AdminDashboardPage() {
             <form onSubmit={handleSaveProject} style={{ display: 'grid', gap: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr) 90px', gap: '16px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Project Name</label>
+                  <label htmlFor="project-name" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Project Name</label>
                   <input
+                    id="project-name"
+                    name="name"
                     type="text"
                     value={projectForm.name}
                     onChange={e => setProjectForm({ ...projectForm, name: e.target.value })}
@@ -612,8 +624,10 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Tech Stack</label>
+                  <label htmlFor="project-stack" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Tech Stack</label>
                   <input
+                    id="project-stack"
+                    name="stack"
                     type="text"
                     value={projectForm.stack}
                     onChange={e => setProjectForm({ ...projectForm, stack: e.target.value })}
@@ -623,8 +637,10 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Order</label>
+                  <label htmlFor="project-order" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Order</label>
                   <input
+                    id="project-order"
+                    name="order"
                     type="number"
                     value={projectForm.order}
                     onChange={e => setProjectForm({ ...projectForm, order: e.target.value })}
@@ -634,8 +650,10 @@ export default function AdminDashboardPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Description</label>
+                <label htmlFor="project-description" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Description</label>
                 <textarea
+                  id="project-description"
+                  name="description"
                   rows={2}
                   value={projectForm.description}
                   onChange={e => setProjectForm({ ...projectForm, description: e.target.value })}
@@ -647,8 +665,10 @@ export default function AdminDashboardPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>GitHub Source URL</label>
+                  <label htmlFor="project-code" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>GitHub Source URL</label>
                   <input
+                    id="project-code"
+                    name="code"
                     type="url"
                     value={projectForm.code}
                     onChange={e => setProjectForm({ ...projectForm, code: e.target.value })}
@@ -658,8 +678,10 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Live Demo URL</label>
+                  <label htmlFor="project-live" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Live Demo URL</label>
                   <input
+                    id="project-live"
+                    name="live"
                     type="url"
                     value={projectForm.live}
                     onChange={e => setProjectForm({ ...projectForm, live: e.target.value })}
@@ -734,8 +756,10 @@ export default function AdminDashboardPage() {
             }
           }} style={{ display: 'grid', gap: '18px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About headline</label>
+              <label htmlFor="profile-headline" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About headline</label>
               <input
+                id="profile-headline"
+                name="headline"
                 type="text"
                 value={profileForm.headline}
                 onChange={e => setProfileForm({ ...profileForm, headline: e.target.value })}
@@ -745,8 +769,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About introduction</label>
+              <label htmlFor="profile-intro" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Home &amp; About introduction</label>
               <textarea
+                id="profile-intro"
+                name="intro"
                 rows={3}
                 value={profileForm.intro}
                 onChange={e => setProfileForm({ ...profileForm, intro: e.target.value })}
@@ -756,8 +782,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>KAALYUG Founder Note (Home &amp; About)</label>
+              <label htmlFor="profile-kaalyug-note" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>KAALYUG Founder Note (Home &amp; About)</label>
               <textarea
+                id="profile-kaalyug-note"
+                name="kaalyugNote"
                 rows={2}
                 value={profileForm.kaalyugNote}
                 onChange={e => setProfileForm({ ...profileForm, kaalyugNote: e.target.value })}
@@ -766,8 +794,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Role / Headline</label>
+              <label htmlFor="profile-resume-role" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Role / Headline</label>
               <input
+                id="profile-resume-role"
+                name="resumeRole"
                 type="text"
                 value={profileForm.resumeRole}
                 onChange={e => setProfileForm({ ...profileForm, resumeRole: e.target.value })}
@@ -777,8 +807,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Education</label>
+              <label htmlFor="profile-resume-education" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Education</label>
               <input
+                id="profile-resume-education"
+                name="resumeEducation"
                 type="text"
                 value={profileForm.resumeEducation}
                 onChange={e => setProfileForm({ ...profileForm, resumeEducation: e.target.value })}
@@ -788,8 +820,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Skills (comma-separated)</label>
+              <label htmlFor="profile-resume-skills" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Résumé Skills (comma-separated)</label>
               <textarea
+                id="profile-resume-skills"
+                name="resumeSkills"
                 rows={2}
                 value={profileForm.resumeSkills}
                 onChange={e => setProfileForm({ ...profileForm, resumeSkills: e.target.value })}
@@ -800,8 +834,10 @@ export default function AdminDashboardPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Focus Title</label>
+                <label htmlFor="profile-focus-title" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Focus Title</label>
                 <input
+                  id="profile-focus-title"
+                  name="focusTitle"
                   type="text"
                   value={profileForm.focusTitle}
                   onChange={e => setProfileForm({ ...profileForm, focusTitle: e.target.value })}
@@ -809,8 +845,10 @@ export default function AdminDashboardPage() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Availability CTA</label>
+                <label htmlFor="profile-availability" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Availability CTA</label>
                 <input
+                  id="profile-availability"
+                  name="availability"
                   type="text"
                   value={profileForm.availability}
                   onChange={e => setProfileForm({ ...profileForm, availability: e.target.value })}
@@ -820,8 +858,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Technical Focus Intro</label>
+              <label htmlFor="profile-focus-intro" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Technical Focus Intro</label>
               <textarea
+                id="profile-focus-intro"
+                name="focusIntro"
                 rows={2}
                 value={profileForm.focusIntro}
                 onChange={e => setProfileForm({ ...profileForm, focusIntro: e.target.value })}
@@ -830,8 +870,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Engineering Approach Title</label>
+              <label htmlFor="profile-career-title" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Engineering Approach Title</label>
               <input
+                id="profile-career-title"
+                name="careerTitle"
                 type="text"
                 value={profileForm.careerTitle}
                 onChange={e => setProfileForm({ ...profileForm, careerTitle: e.target.value })}
@@ -840,8 +882,10 @@ export default function AdminDashboardPage() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Engineering Approach Description</label>
+              <label htmlFor="profile-career-intro" style={{ display: 'block', fontSize: '11px', fontWeight: 800, marginBottom: '6px' }}>Engineering Approach Description</label>
               <textarea
+                id="profile-career-intro"
+                name="careerIntro"
                 rows={2}
                 value={profileForm.careerIntro}
                 onChange={e => setProfileForm({ ...profileForm, careerIntro: e.target.value })}
@@ -932,7 +976,10 @@ export default function AdminDashboardPage() {
                   </div>
                   <form className="chat-form" onSubmit={sendReply}>
                     <input
+                      id="inbox-reply"
+                      name="reply"
                       type="text"
+                      aria-label="Reply to conversation"
                       placeholder={`Reply to ${activeThread}…`}
                       value={inboxDraft}
                       onChange={e => setInboxDraft(e.target.value)}
@@ -977,6 +1024,9 @@ export default function AdminDashboardPage() {
             {(siteInfo.socialLinks || []).map((link, idx) => (
               <div key={idx} style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) auto', gap: '12px', alignItems: 'center' }}>
                 <input
+                  id={`social-name-${idx}`}
+                  name={`socialLinks[${idx}].name`}
+                  aria-label={`Social link ${idx + 1} name`}
                   type="text"
                   value={link.name}
                   placeholder="Name"
@@ -988,6 +1038,9 @@ export default function AdminDashboardPage() {
                   style={{ width: '100%', height: '38px', padding: '0 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)' }}
                 />
                 <input
+                  id={`social-url-${idx}`}
+                  name={`socialLinks[${idx}].url`}
+                  aria-label={`Social link ${idx + 1} URL`}
                   type="text"
                   value={link.url}
                   placeholder="https://..."
@@ -999,6 +1052,9 @@ export default function AdminDashboardPage() {
                   style={{ width: '100%', height: '38px', padding: '0 12px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--ink)' }}
                 />
                 <input
+                  id={`social-icon-${idx}`}
+                  name={`socialLinks[${idx}].icon`}
+                  aria-label={`Social link ${idx + 1} icon`}
                   type="text"
                   value={link.icon || ''}
                   placeholder="Icon (Lucide name)"

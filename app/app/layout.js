@@ -21,13 +21,13 @@ export const metadata = {
     siteName: 'DRJ7ZZ Portfolio',
     type: 'website',
     locale: 'en_US',
-    images: [{ url: '/assets/images/profile-cutout.png', width: 486, height: 780, alt: 'Dirghraj Giri, also known as DRJ7ZZ' }]
+    images: [{ url: '/assets/images/profile.png', width: 1086, height: 1086, alt: 'Dirghraj Giri, also known as DRJ7ZZ' }]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Dirghraj Giri | Software Developer',
     description: 'Portfolio of Dirghraj Giri, a software developer from Nepal building practical digital products.',
-    images: ['/assets/images/profile-cutout.png']
+    images: ['/assets/images/profile.png']
   },
   robots: {
     index: true,
@@ -70,7 +70,7 @@ export default function RootLayout({ children }) {
     name: 'Dirghraj Giri',
     alternateName: ['DRJ7ZZ', 'DRJ', 'drj7zz', 'Dirghraj', 'Giridirghraj'],
     url: 'https://giridirghraj.vercel.app',
-    image: 'https://giridirghraj.vercel.app/assets/images/profile-cutout.png',
+    image: 'https://giridirghraj.vercel.app/assets/images/profile.png',
     jobTitle: 'Software Developer',
     description: 'Software developer from Nepal building practical, accessible, and maintainable digital products.',
     address: { '@type': 'PostalAddress', addressCountry: 'NP', addressLocality: 'Parsa, Madhesh' },
@@ -95,6 +95,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <a className="skip-link" href="#main-content">Skip to content</a>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
         <ThemeProvider>

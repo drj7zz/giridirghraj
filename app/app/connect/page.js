@@ -286,18 +286,24 @@ export default function ConnectPage() {
                 {!googleConfigured && <p className="chat-hint">Google sign-in is not configured on this deployment yet.</p>}
               </div>
             ) : <>
+            <label className="visually-hidden" htmlFor="chat-username">Username</label>
             <input
+              id="chat-username"
+              name="username"
               type="text"
-              placeholder="Username (3–20 letters/numbers)"
+              placeholder="Username"
               value={authForm.username}
               onChange={e => setAuthForm({ ...authForm, username: e.target.value })}
               required
               autoComplete="username"
             />
             <div style={{ position: 'relative' }}>
+              <label className="visually-hidden" htmlFor="chat-password">Password</label>
               <input
+                id="chat-password"
+                name="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Password (min 6 characters)"
+                placeholder="Password"
                 value={authForm.password}
                 onChange={e => setAuthForm({ ...authForm, password: e.target.value })}
                 required
@@ -316,6 +322,8 @@ export default function ConnectPage() {
             <div className="chat-auth-row">
               <label>
                 <input
+                  id="chat-remember"
+                  name="remember"
                   type="checkbox"
                   checked={authForm.remember}
                   onChange={e => setAuthForm({ ...authForm, remember: e.target.checked })}
@@ -366,7 +374,10 @@ export default function ConnectPage() {
               ))}
             </div>
             <form className="chat-form" onSubmit={handleSend}>
+              <label className="visually-hidden" htmlFor="chat-message">Message</label>
               <input
+                id="chat-message"
+                name="message"
                 type="text"
                 placeholder="Type a message…"
                 value={draft}
